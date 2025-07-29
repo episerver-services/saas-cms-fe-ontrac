@@ -45,3 +45,5 @@ docker-compose.override.yml
 
 # GitHub Actions (optional, remove if using GitHub workflows)
 # .github/
+*storybook.log
+storybook-static

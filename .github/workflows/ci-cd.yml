@@ -1,0 +1,94 @@
+name: CI/CD
+
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+    branches:
+      - '**'
+
+jobs:
+  lint-build-test:
+    name: Lint, Build, and Test
+    runs-on: ubuntu-latest
+
+    steps:
+      # 🧾 Checkout source code
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 📦 Install PNPM
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      # ⚙️ Setup Node.js environment
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      # 📥 Install project dependencies
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # 🔍 Verify installed packages (optional)
+      - name: Verify install
+        run: pnpm list --depth=0
+
+      # ✅ Run linter to catch code style issues
+      - name: Run linter
+        run: pnpm lint
+
+      # 🧪 Run unit tests using Jest
+      - name: Run unit tests (Jest)
+        run: pnpm test
+
+      # 🛠️ Set up Docker Buildx (enables advanced caching)
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # 🐳 Build Docker image (for verification only)
+      - name: Build Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: false
+          tags: ${{ secrets.DOCKER_USERNAME }}/optimizely-fe:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  docker-publish:
+    name: Publish Docker Image (main only)
+    runs-on: ubuntu-latest
+    needs: lint-build-test
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      # 🧾 Checkout again for this job context
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 🛠️ Set up Docker Buildx (enables advanced caching)
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # 🔐 Authenticate with DockerHub
+      - name: Log in to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      # 🚀 Build and publish Docker image
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/optimizely-fe:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

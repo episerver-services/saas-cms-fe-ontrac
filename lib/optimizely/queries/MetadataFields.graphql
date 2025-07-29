@@ -1,0 +1,14 @@
+fragment MetadataFields on ContentMetadata {
+  displayName
+  url {
+    base
+    internal
+    hierarchical
+    default
+    type
+  }
+  types
+  status
+  published
+  lastModified
+}

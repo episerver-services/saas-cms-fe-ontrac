@@ -2,9 +2,7 @@ import ContentAreaMapper from '@/app/components/content-area/mapper'
 import DraftModeCmsPage from '@/app/components/draft/draft-mode-cms-page'
 import { DraftModeLoader } from '@/app/components/draft/draft-mode-loader'
 import FallbackErrorUI from '@/app/components/errors/fallback-error-ui'
-import VisualBuilderExperienceWrapper from '@/app/components/visual-builder/wrapper'
 import { optimizely } from '@/lib/optimizely/fetch'
-import { SafeVisualBuilderExperience } from '@/lib/optimizely/types/experience'
 import {
   getValidLocale,
   mapPathWithoutLocale,
@@ -17,7 +15,7 @@ import { Suspense } from 'react'
 
 /**
  * Generates SEO metadata for a given locale and slug.
- * Attempts to retrieve metadata from CMSPage or Experience content.
+ * Attempts to retrieve metadata from CMSPage content.
  *
  * @param props - Async props containing locale and slug from route params
  * @returns Metadata object used in the <head> section of the page
@@ -44,21 +42,6 @@ export async function generateMetadata(props: {
 
     const page = pageData?.CMSPage?.item
     if (!page) {
-      const experienceData = await optimizely.GetVisualBuilderBySlug({
-        locales: [locales],
-        slug: formattedSlug,
-      })
-
-      const experience = experienceData?.SEOExperience?.item
-      if (experience) {
-        return {
-          title: experience.title,
-          description: experience.shortDescription || '',
-          keywords: experience.keywords ?? '',
-          alternates: generateAlternates(locale, formattedSlug),
-        }
-      }
-
       return {}
     }
 
@@ -80,7 +63,7 @@ export async function generateMetadata(props: {
  * Generates all static paths (slug + locale) for prerendering.
  * Falls back to dynamic rendering if running inside a Docker build.
  *
- * @returns An array of static params for each known CMS or Experience route
+ * @returns An array of static params for each known CMS route
  */
 export async function generateStaticParams() {
   if (process.env.IS_BUILD === 'true') {
@@ -88,7 +71,7 @@ export async function generateStaticParams() {
   }
 
   try {
-    const pageTypes = ['CMSPage', 'SEOExperience']
+    const pageTypes = ['CMSPage']
     const pathsResp = await optimizely.AllPages({ pageType: pageTypes })
     const paths = pathsResp._Content?.items ?? []
 
@@ -116,7 +99,7 @@ export async function generateStaticParams() {
 }
 
 /**
- * Renders a hybrid page from either a CMS content page or a Visual Builder experience.
+ * Renders a page from a CMS content page.
  * Supports draft mode rendering and falls back to notFound() if no content is found.
  *
  * @param props - Route params including locale and slug
@@ -150,32 +133,6 @@ export default async function CmsPage(props: {
   }
 
   if (!page?._modified) {
-    let experience = null
-    try {
-      const experienceData = await optimizely.GetVisualBuilderBySlug({
-        locales: [locales],
-        slug: formattedSlug,
-      })
-      const rawExperience = experienceData?.SEOExperience?.item
-      const isValidExperience =
-        rawExperience?.composition !== null &&
-        rawExperience?.composition !== undefined
-
-      if (isValidExperience) {
-        experience = rawExperience as SafeVisualBuilderExperience
-      }
-    } catch (err) {
-      return <FallbackErrorUI error={err} />
-    }
-
-    if (experience) {
-      return (
-        <Suspense>
-          <VisualBuilderExperienceWrapper experience={experience} />
-        </Suspense>
-      )
-    }
-
     return notFound()
   }
 

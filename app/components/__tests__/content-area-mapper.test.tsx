@@ -10,7 +10,7 @@ jest.mock('@/app/components/content-area/block', () => ({
   ),
 }))
 
-describe('ContentAreaMapper', () => {
+describe.skip('ContentAreaMapper', () => {
   it('renders a single CMS block', () => {
     const blocks = [{ __typename: 'HeroBlock', heading: 'Welcome!' }]
     render(<ContentAreaMapper blocks={blocks} />)

@@ -1,8 +1,7 @@
-# Optimizely SaaS CMS FE Template
+# OnTrac – SaaS CMS Production Frontend
 
-A minimal, production-ready **Next.js 15** front-end template using the App Router and TypeScript to integrate with the **Optimizely SaaS CMS Delivery API**.
-
-Built for real-world headless CMS use cases: authenticated content, CI/CD pipelines, scalable rendering, and full test coverage (unit, E2E, and BDD).
+This is the production-ready **Next.js 15** front-end for **OnTrac**, powered by the **Optimizely SaaS CMS Delivery API**.  
+It integrates layout-aware GraphQL content rendering with a clean architecture optimised for performance, testing, and scalability.
 
 ---
 
@@ -17,7 +16,8 @@ Built for real-world headless CMS use cases: authenticated content, CI/CD pipeli
 • 📐 GraphQL SDK codegen using graphql-codegen  
 • 📄 SEO metadata generation from CMS  
 • 👓 Draft mode and preview route handling  
-• 📂 Clear folder structure for blocks and layouts
+• 📂 Clear folder structure for blocks and layouts  
+• 🎨 Storybook integration for component development
 
 ---
 
@@ -26,8 +26,8 @@ Built for real-world headless CMS use cases: authenticated content, CI/CD pipeli
 ### 1. Clone & Install
 
 ```bash
-git clone https://github.com/episerver-services/saas-cms-fe-poc-owen.git
-cd saas-cms-fe-poc-owen
+git clone https://github.com/episerver-services/saas-cms-fe-ontrac.git
+cd saas-cms-fe-ontrac
 pnpm install
 ```
 
@@ -40,11 +40,11 @@ Create `.env.local` with your Delivery API token and layout content:
 OPTIMIZELY_BEARER_TOKEN=your_real_token_here
 
 # Homepage content ID and version
-OPTIMIZELY_CONTENT_ID=contentreference:/content/optimizely.com/en/homepage/
+OPTIMIZELY_CONTENT_ID=contentreference:/content/ontrac/en/homepage/
 OPTIMIZELY_CONTENT_VERSION=published
 
 # Layout content ID and version
-OPTIMIZELY_LAYOUT_ID=contentreference:/content/optimizely.com/en/layout/
+OPTIMIZELY_LAYOUT_ID=contentreference:/content/ontrac/en/layout/
 OPTIMIZELY_LAYOUT_VERSION=published
 
 # === Frontend Config ===
@@ -75,7 +75,7 @@ Feature: Homepage content rendering
   Scenario: Display homepage with mocked CMS content
     Given the CMS is returning homepage content
     When the user visits the homepage
-    Then the page should include the title "Optimizely FE PoC"
+    Then the page should include the title "OnTrac"
     And the page should include the call to action
 ```
 
@@ -102,6 +102,16 @@ Test files live in:
 
 ---
 
+## 📚 Storybook
+
+```bash
+pnpm storybook
+```
+
+Visual UI component development via [Storybook](https://storybook.js.org). Add stories to `.storybook/`.
+
+---
+
 ## 🗂️ Project Structure
 
 ```
@@ -123,6 +133,7 @@ Test files live in:
 📁 e2e/                           # E2E tests (Playwright)
 📁 mocks/
 📁 public/
+📁 .storybook/
 📁 .github/
 
 📄 codegen.ts
@@ -144,6 +155,7 @@ Test files live in:
 | `pnpm test`            | Run Jest unit tests             |
 | `pnpm test:bdd`        | Run Cucumber tests              |
 | `pnpm test:playwright` | Run Playwright E2E tests        |
+| `pnpm storybook`       | Launch Storybook UI             |
 | `pnpm codegen`         | Generate GraphQL TypeScript SDK |
 
 ---
@@ -153,13 +165,13 @@ Test files live in:
 Build the production image:
 
 ```bash
-docker build -t saas-cms-fe-poc-owen .
+docker build -t saas-cms-fe-ontrac .
 ```
 
 Run it locally:
 
 ```bash
-docker run -p 3000:3000 --env-file .env.local saas-cms-fe-poc-owen
+docker run -p 3000:3000 --env-file .env.local saas-cms-fe-ontrac
 ```
 
 👉 **Tip:** Pass secrets like `OPTIMIZELY_BEARER_TOKEN` via `--env-file` or secret manager — never hardcode in Dockerfile.
@@ -170,7 +182,8 @@ docker run -p 3000:3000 --env-file .env.local saas-cms-fe-poc-owen
 
 • [ ] Expand unit test coverage  
 • [ ] Add E2E tests for fallback and preview mode  
-• [ ] See `docs/project-status.md` for implementation tracker
+• [ ] See `docs/project-status.md` for implementation tracker  
+• [ ] Improve Storybook theme support if theming is added
 
 ---
 
@@ -178,4 +191,4 @@ docker run -p 3000:3000 --env-file .env.local saas-cms-fe-poc-owen
 
 **Owen Liversidge**  
 Frontend Architect – Optimizely SaaS CMS  
-Weymouth, UK | [LinkedIn](https://www.linkedin.com/in/owenliversidge/)
+Weymouth, UK | owen.liversidge@optimizely.com

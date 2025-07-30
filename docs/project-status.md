@@ -1,82 +1,95 @@
-# 📊 Project Status: Optimizely SaaS CMS FE Template
+# 📊 Project Status: OnTrac SaaS CMS FE Template
 
 This file tracks the current implementation progress of the custom frontend template for the Optimizely SaaS CMS project.
 
 ✅ = Complete  
 🔄 = In Progress  
 🔲 = Not Started
+❌ = Not in current scope
 
-_Last updated: 29 July 2025_
+_Last updated: 30 July 2025_
 
 ---
 
 ## 🧱 Phase 1: Project Setup & Infrastructure
 
-| Task                             | Status | Notes                                        |
-| -------------------------------- | ------ | -------------------------------------------- |
-| Project scaffold & folder layout | ✅     | Uses App Router + `/app` layout              |
-| Environment config (.env setup)  | ✅     | `.env.local` found; Docker-ready             |
-| TypeScript + ESLint config       | ✅     | `tsconfig.json`, `eslint.config.ts` in place |
-| GitHub CI/CD pipelines           | ✅     | `.github/` workflows present                 |
-| Commit linting / Husky hooks     | ✅     | `.husky/pre-commit` set up with lint-staged  |
+| Task                                 | Status | Notes                                              |
+| ------------------------------------ | ------ | -------------------------------------------------- |
+| **Project scaffold & folder layout** | ✅     | App Router, `/app`, `/lib`, etc. all in place      |
+| **Environment config (.env setup)**  | 🔄     | `.env.local` expected by codegen + Docker          |
+| **TypeScript + ESLint config**       | ✅     | `tsconfig.json`, `eslint.config.ts` are valid      |
+| **GitHub CI/CD pipelines**           | ✅     | `ci-cd.yaml` handles lint, build, test via Actions |
+| **Commit linting / Husky hooks**     | ✅     | `.husky/pre-commit` present with `lint-staged`     |
 
 ---
 
 ## 📦 Phase 2: CMS Integration (Headless Foundation)
 
-| Task                               | Status | Notes                                                |
-| ---------------------------------- | ------ | ---------------------------------------------------- |
-| GraphQL API connection             | ✅     | ENV-based bearer token wiring complete               |
-| SDK setup with graphql-codegen     | ✅     | Codegen present in `codegen.ts` and `lib/optimizely` |
-| Content ID config (home, layout)   | ✅     | ENV vars support root layout/content                 |
-| Preview mode support (draft route) | ✅     | All preview routes (including draft mode API) exist  |
-| Fallback & error handling          | ✅     | not-found.tsx refactored, build passes cleanly       |
+| Task                               | Status | Notes                                                       |
+| ---------------------------------- | ------ | ----------------------------------------------------------- |
+| GraphQL API connection             | 🔲     | Optimizely CMS disconnected — integration pending           |
+| SDK setup with graphql-codegen     | 🔲     | graphql-codegen removed; no generated SDK in use            |
+| Content ID config (home, layout)   | 🔲     | CMS-driven layout/homepage config removed                   |
+| Preview mode support (draft route) | 🔲     | Draft mode routes and API removed; not active in this build |
+| Fallback & error handling          | ✅     | `not-found.tsx` still handles unresolved routes cleanly     |
 
 ---
 
 ## 🧱 Phase 3: Core Rendering Logic
 
-| Task                                 | Status | Notes                                                               |
-| ------------------------------------ | ------ | ------------------------------------------------------------------- |
-| Page routing (`[locale]/[slug]`)     | ✅     | Implemented via catch-all dynamic route                             |
-| Catch-all content renderer           | ✅     | Working via shared layout/content rendering                         |
-| Component factory mapper             | ✅     | Uses `__typename` switcher                                          |
-| Slot renderer for named areas        | ✅     | Base implementation working; nested slots now supported recursively |
-| ID resolution (inline/shared blocks) | ✅     | Visual Builder runtime shape guard added; next: nested slot support |
-| Rich text and media component base   | ✅     | CTA, Text, Image components supported                               |
+| Task                                 | Status | Notes                                                                |
+| ------------------------------------ | ------ | -------------------------------------------------------------------- |
+| Page routing (`[locale]/[slug]`)     | ✅     | Catch-all route remains implemented                                  |
+| Catch-all content renderer           | 🔲     | Content renderer stripped back; CMS not currently connected          |
+| Component factory mapper             | 🔲     | Factory logic removed; static fallback block only in use             |
+| Slot renderer for named areas        | 🔲     | No slot rendering — layout rendering removed with CMS disconnect     |
+| ID resolution (inline/shared blocks) | 🔲     | No Visual Builder or GraphQL runtime guards present                  |
+| Rich text and media component base   | 🔲     | CMS-driven block components removed; only static placeholders remain |
 
 ---
 
 ## 🌐 Phase 4: Performance & Delivery
 
-| Task                           | Status | Notes                                                                                  |
-| ------------------------------ | ------ | -------------------------------------------------------------------------------------- |
-| Rendering model enforcement    | ✅     | ISR + webhook-based revalidation working                                               |
-| CDN-based image transformation | ✅     | Global Next.js image loader handles both Cloudinary and Optimizely URLs                |
-| Core Web Vitals planning       | ✅     | Images audited and optimised (priority, sizes, unoptimized); layout CLS fixes in place |
+| Task                           | Status | Notes                                                                              |
+| ------------------------------ | ------ | ---------------------------------------------------------------------------------- |
+| Rendering model enforcement    | 🔲     | ISR not currently configured; no CMS-connected content or revalidation setup       |
+| CDN-based image transformation | 🔄     | Next.js image config present, but image usage minimal; CDN optimisation unverified |
+| Core Web Vitals planning       | 🔄     | Some layout choices hint at performance planning; full Vitals strategy not applied |
 
 ---
 
 ## 🛡️ Phase 5: Accessibility, SEO & Metadata
 
-| Task                       | Status | Notes                                                          |
-| -------------------------- | ------ | -------------------------------------------------------------- |
-| Metadata from CMS          | ✅     | Pulled from CMSPage or SEOExperience via generateMetadata.     |
-| Accessibility baseline     | 🔄     | aria-expanded, aria-hidden, and skip links logic in progress.  |
-| Skip links, ARIA audit     | 🔄     | Skip link is present in layout; full audit work still ongoing. |
-| robots.txt / sitemap setup | ✅     | `sitemap.xml` route complete, robust, and tested.              |
-| Core Web Vitals reporting. | ✅     | VitalsInit logs CWV in `layout.tsx`; dev-only for now.         |
+| Task                       | Status | Notes                                                               |
+| -------------------------- | ------ | ------------------------------------------------------------------- |
+| Metadata from CMS          | 🔲     | CMS metadata integration removed; future layout-aware SEO TBD       |
+| Accessibility baseline     | 🔄     | Placeholder structure OK; no ARIA or WCAG validation yet            |
+| Skip links, ARIA audit     | ✅     | Skip link implemented in `layout.tsx`; other checks not yet applied |
+| robots.txt / sitemap setup | ❌     | No sitemap or robots.txt routes in current codebase                 |
+| Core Web Vitals reporting  | 🔲     | `VitalsInit` placeholder exists; actual CWV logging logic removed   |
 
 ---
 
 ## 🧪 Phase 6: Unit & E2E Test Frameworks
 
-| Task                          | Status | Notes                                                           |
-| ----------------------------- | ------ | --------------------------------------------------------------- |
-| Jest unit test setup          | ✅     | Config added, runs with JSDOM + RTL                             |
-| RTL + jest-dom assertions     | ✅     | `toBeInTheDocument` and other matchers working                  |
-| Component unit test coverage  | ✅     | `ContentAreaMapper` tested (blocks + recursion); more to follow |
-| E2E/Browsers tests (optional) | ✅     | Playwright installed; homepage test running and passing         |
+| Task                          | Status | Notes                                                                       |
+| ----------------------------- | ------ | --------------------------------------------------------------------------- |
+| Jest unit test setup          | ✅     | Jest + RTL config present; minimal test coverage so far                     |
+| RTL + jest-dom assertions     | ✅     | Matchers like `toBeInTheDocument` available via `@testing-library/jest-dom` |
+| Component unit test coverage  | 🔄     | Starter tests in place (e.g. `ContentAreaMapper`); most components untested |
+| E2E/Browsers tests (optional) | 🔲     | Playwright not yet present; E2E testing deferred until CMS integration      |
+
+---
+
+## 🧱 Phase 7: Visual Builder (Optional – Scoped Out for OnTrac)
+
+| Task                                 | Status | Notes                                                       |
+| ------------------------------------ | ------ | ----------------------------------------------------------- |
+| Visual Builder support planned       | 🔲     | No current requirement; VB support removed for OnTrac scope |
+| Experience content query (GraphQL)   | ❌     | `_Experience` not used; removed to simplify integration     |
+| Visual block component compatibility | ❌     | Not implemented — only core static blocks remain            |
+| Layout awareness and slot mapping    | ❌     | Removed pending future VB re-scoping                        |
+| Safe guards for Experience types     | 🔄     | Partial shape guards left in for future re-integration      |
 
 ---
 
@@ -88,12 +101,3 @@ _Last updated: 29 July 2025_
 | Code comments + JSDoc   | ✅     | Function-level JSDoc added throughout key files    |
 | Dev commands (scripts)  | ✅     | Clean, test, build, preview all covered via `pnpm` |
 | DX setup (editorconfig) | ✅     | Formatting and linting enforced across team setups |
-
----
-
-## ⏱️ Estimated Remaining Workload
-
-| Phase | Remaining Tasks                        | Complexity | Notes                                                        |
-| ----- | -------------------------------------- | ---------- | ------------------------------------------------------------ |
-| 7     | Visual Builder scaffolding (optional)  | Medium     | If next client uses VB, implement `ExperienceRenderer`       |
-| 3     | Fallback UI for invalid VB composition | Low        | Already logged as handled in `FallbackErrorUI`, test pending |

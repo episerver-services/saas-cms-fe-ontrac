@@ -101,7 +101,7 @@ pnpm test:playwright
 Test files live in:
 
 - `app/components/__tests__/`
-- `tests/`
+- `e2e/`
 
 ---
 
@@ -134,7 +134,7 @@ Visual UI component development via [Storybook](https://storybook.js.org). Add s
 
 📁 features/                      # BDD tests (Cucumber)
 📁 e2e/                           # E2E tests (Playwright)
-📁 mocks/
+📁 mocks/                         # Mock data for testing components before CMS is live
 📁 public/
 📁 .storybook/
 📁 .github/

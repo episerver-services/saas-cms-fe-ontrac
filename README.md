@@ -36,19 +36,22 @@ pnpm install
 Create `.env.local` with your Delivery API token and layout content:
 
 ```env
-# === Optimizely Delivery API ===
-OPTIMIZELY_BEARER_TOKEN=your_real_token_here
+# ┌────────────────────────────────────────────┐
+# │ Optimizely GraphQL API Configuration       │
+# └────────────────────────────────────────────┘
 
-# Homepage content ID and version
-OPTIMIZELY_CONTENT_ID=contentreference:/content/ontrac/en/homepage/
-OPTIMIZELY_CONTENT_VERSION=published
+OPTIMIZELY_API_URL="https://cg.optimizely.com/content/v2"
+OPTIMIZELY_SINGLE_KEY=your_single_delivery_key_here
 
-# Layout content ID and version
-OPTIMIZELY_LAYOUT_ID=contentreference:/content/ontrac/en/layout/
-OPTIMIZELY_LAYOUT_VERSION=published
+# Combine App Key and Secret and Base64 encode:
+# echo -n 'your-app-key:your-app-secret' | base64
+OPTIMIZELY_PREVIEW_SECRET=your_base64_encoded_preview_secret
 
-# === Frontend Config ===
-SITE_DOMAIN=http://localhost:3000
+# Optional revalidation secret for ISR
+OPTIMIZELY_REVALIDATE_SECRET=
+
+# This should match your CMS instance domain
+NEXT_PUBLIC_CMS_URL=app-epsaarrivia058tjp001.cms.optimizely.com
 ```
 
 ### 3. Start Development

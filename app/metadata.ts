@@ -3,12 +3,13 @@ import type { Metadata } from 'next'
 /**
  * The fallback title for all pages if no CMS or SEO content is available.
  */
-const FALLBACK_TITLE = 'Optimizely FE PoC'
+const FALLBACK_TITLE = 'OnTrac – Fast, Reliable Last-Mile Delivery'
 
 /**
  * The fallback description for all pages.
  */
-const FALLBACK_DESCRIPTION = 'Frontend demo for Optimizely CMS SaaS'
+const FALLBACK_DESCRIPTION =
+  'Powering seamless delivery experiences across the U.S. with cutting-edge logistics technology. Discover how OnTrac keeps your business moving.'
 
 /**
  * Site domain used in Open Graph metadata. Defaults to localhost during development.
@@ -25,8 +26,8 @@ export const metadata: Metadata = {
     title: FALLBACK_TITLE,
     description: FALLBACK_DESCRIPTION,
     url: SITE_DOMAIN,
-    siteName: FALLBACK_TITLE,
-    locale: 'en_GB',
+    siteName: 'OnTrac',
+    locale: 'en_US',
     type: 'website',
   },
   twitter: {

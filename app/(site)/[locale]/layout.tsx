@@ -2,8 +2,8 @@ import { Suspense } from 'react'
 import { Geist, Geist_Mono } from 'next/font/google'
 import '../../globals.css'
 import { LOCALES } from '@/lib/optimizely/utils/language'
-import { Header } from '@/app/components/layout/header'
-import { Footer } from '@/app/components/layout/footer'
+import Header from '@/app/components/layout/header'
+import Footer from '@/app/components/layout/footer'
 import VitalsInit from '@/app/components/vitals-init'
 
 const geistSans = Geist({
@@ -63,13 +63,13 @@ export default async function RootLayout({
           Skip to main content
         </a>
         <Suspense>
-          <Header locale={locale} />
+          <Header />
         </Suspense>
         <main id="main-content" className="container mx-auto min-h-screen px-4">
           {children}
         </main>
         <Suspense>
-          <Footer locale={locale} />
+          <Footer />
         </Suspense>
       </body>
     </html>

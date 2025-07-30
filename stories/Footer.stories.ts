@@ -1,15 +1,16 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite'
-import Header from '@/app/components/layout/header'
+import Footer from '@/app/components/layout/footer'
 
-const meta: Meta<typeof Header> = {
-  title: 'Components/Header',
-  component: Header,
+const meta = {
+  title: 'Components/Footer',
+  component: Footer,
   parameters: {
     layout: 'fullscreen',
   },
-}
+} satisfies Meta<typeof Footer>
 
 export default meta
+
 type Story = StoryObj<typeof meta>
 
 export const Default: Story = {}

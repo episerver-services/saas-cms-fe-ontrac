@@ -123,10 +123,53 @@ Follow WCAG 2.1 AA compliance:
 
 ## 🚦 Git & CI
 
-- Use short, clear commit messages
-- Follow `feature/`, `bugfix/`, `chore/` prefixes (optional)
-- `pre-commit` hooks enforce linting and formatting
-- All tests run via GitHub Actions on every PR or push
+- All development must be done on **feature branches** created from `develop`.
+- Branch naming convention is: `feature/<JIRA-ID>`  
+  e.g. `feature/OCM-51`
+
+```bash
+git checkout develop
+git pull
+git checkout -b feature/OCM-51
+```
+
+- Keep commits focused and descriptive:
+  - Prefixes like `feat:`, `fix:`, `chore:` are optional but encouraged.
+  - Avoid large “catch-all” commits; prefer smaller, atomic changes.
+
+- PRs must target `develop`, **not** `main`.
+  - PR titles should include the Jira ticket number, e.g. `OCM-51: Add ImageBlock component`.
+
+### ✅ Before opening a PR:
+
+- Ensure linting passes:
+
+```bash
+pnpm lint
+```
+
+- Run all tests:
+
+```bash
+pnpm test
+pnpm test:bdd
+pnpm test:playwright
+```
+
+- If adding a new block/component:
+  - Include a unit test (`*.test.tsx`)
+  - Add Storybook stories (if adopted)
+  - Ensure it supports `aria-*` attributes if interactive
+
+### 🔄 CI Automation
+
+- GitHub Actions automatically run on:
+  - Push to `develop` or any `feature/*` branch
+  - Pull requests targeting `develop`
+
+- Local `pre-commit` hook (Husky) enforces:
+  - Linting
+  - Prettier formatting
 
 ---
 

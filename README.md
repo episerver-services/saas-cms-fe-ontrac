@@ -53,7 +53,7 @@ OPTIMIZELY_PREVIEW_SECRET=your_base64_encoded_preview_secret
 OPTIMIZELY_REVALIDATE_SECRET=
 
 # This should match your CMS instance domain
-NEXT_PUBLIC_CMS_URL=app-epsaarrivia058tjp001.cms.optimizely.com
+NEXT_PUBLIC_CMS_URL=your-cms-instance-domain.cms.optimizely.com
 ```
 
 ### 3. Start Development

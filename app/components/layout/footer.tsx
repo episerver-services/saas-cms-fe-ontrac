@@ -16,6 +16,12 @@ const EMPTY_DATA: FooterData = {
 
 type Props = { data?: FooterData }
 
+/**
+ * Footer component displaying brand logo, social links, navigation links,
+ * and policy text for desktop and mobile layouts.
+ *
+ * @param data - Optional footer content. Falls back to `EMPTY_DATA` if not provided.
+ */
 const Footer = ({ data = EMPTY_DATA }: Props) => {
   const links = data.footerLinks ?? []
   const leftLinks = links.slice(0, 10)
@@ -23,7 +29,7 @@ const Footer = ({ data = EMPTY_DATA }: Props) => {
 
   return (
     <footer className="bg-background text-textMain py-20">
-      <div className="mx-auto w-full max-w-[1800px] px-5 sm:px-10 md:px-20">
+      <div className="mx-auto w-full max-w-max px-5 sm:px-10 md:px-20">
         {/* Mobile ( < 1024 ): show logo at top */}
         {data.logo?.src && (
           <div className="mb-10 lg:hidden">

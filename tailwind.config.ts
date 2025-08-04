@@ -16,14 +16,23 @@ export default {
       '2xl': '1536px',
     },
     extend: {
-      borderColor: {
+      colors: {
+        background: 'rgb(var(--background) / <alpha-value>)',
+        foreground: 'rgb(var(--foreground) / <alpha-value>)',
         border: 'rgb(var(--border) / <alpha-value>)',
+        brand: 'rgb(var(--brand-red) / <alpha-value>)',
+        textMain: 'rgb(var(--text-main) / <alpha-value>)',
+        textMuted: 'rgb(var(--text-muted))',
+        borderLight: 'rgb(var(--border-light))',
+      },
+      borderColor: {
+        DEFAULT: 'rgb(var(--border) / <alpha-value>)',
       },
       backgroundColor: {
-        background: 'rgb(var(--background) / <alpha-value>)',
+        DEFAULT: 'rgb(var(--background) / <alpha-value>)',
       },
       textColor: {
-        foreground: 'rgb(var(--foreground) / <alpha-value>)',
+        DEFAULT: 'rgb(var(--foreground) / <alpha-value>)',
       },
       borderRadius: {
         DEFAULT: 'var(--radius)',

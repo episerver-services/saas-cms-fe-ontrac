@@ -22,7 +22,7 @@ const Footer = ({ data = EMPTY_DATA }: Props) => {
   const rightLinks = links.slice(10, 20)
 
   return (
-    <footer className="bg-white text-[#101820] py-20">
+    <footer className="bg-background text-textMain py-20">
       <div className="mx-auto w-full max-w-[1800px] px-5 sm:px-10 md:px-20">
         {/* Mobile ( < 1024 ): show logo at top */}
         {data.logo?.src && (
@@ -68,7 +68,7 @@ const Footer = ({ data = EMPTY_DATA }: Props) => {
 
             <div className="lg:mt-4 lg:mb-6">
               {data.socialText && (
-                <h3 className="text-[13px] font-normal uppercase text-[#D22730]">
+                <h3 className="text-[13px] font-normal uppercase text-brand">
                   {data.socialText}
                 </h3>
               )}
@@ -84,9 +84,9 @@ const Footer = ({ data = EMPTY_DATA }: Props) => {
                         target="_blank"
                         rel="noopener noreferrer"
                         aria-label={link.platform}
-                        className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#e0e0e0] hover:opacity-80"
+                        className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-borderLight hover:opacity-80"
                       >
-                        <Icon className="h-5 w-5" />
+                        <Icon className="h-5 w-5 text-textMain" />
                       </a>
                     </li>
                   )
@@ -100,7 +100,7 @@ const Footer = ({ data = EMPTY_DATA }: Props) => {
                   <li key={link.href}>
                     <a
                       href={link.href}
-                      className="transition-colors hover:text-[#D22730]"
+                      className="transition-colors hover:text-brand"
                     >
                       {link.label}
                     </a>
@@ -109,7 +109,7 @@ const Footer = ({ data = EMPTY_DATA }: Props) => {
               </ul>
 
               {data.policyText && (
-                <p className="mt-5 text-[16px] text-black/60">
+                <p className="mt-5 text-[16px] text-textMuted">
                   {data.policyText}
                 </p>
               )}
@@ -127,7 +127,7 @@ const Footer = ({ data = EMPTY_DATA }: Props) => {
                   <li key={link.href}>
                     <a
                       href={link.href}
-                      className="text-[18px] transition-colors hover:text-[#D22730]"
+                      className="text-[18px] transition-colors hover:text-brand"
                     >
                       {link.label}
                     </a>
@@ -141,7 +141,7 @@ const Footer = ({ data = EMPTY_DATA }: Props) => {
         {/* Mobile / tablet content (below lists; hidden at ≥1024) */}
         <div className="mt-8 space-y-6 lg:hidden">
           {data.socialText && (
-            <h3 className="text-[13px] font-normal uppercase text-[#D22730]">
+            <h3 className="text-[13px] font-normal uppercase text-brand">
               {data.socialText}
             </h3>
           )}
@@ -156,9 +156,9 @@ const Footer = ({ data = EMPTY_DATA }: Props) => {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={link.platform}
-                  className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#e0e0e0] hover:opacity-80"
+                  className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-borderLight hover:opacity-80"
                 >
-                  <Icon className="h-5 w-5" />
+                  <Icon className="h-5 w-5 text-textMain" />
                 </a>
               )
             })}
@@ -168,7 +168,7 @@ const Footer = ({ data = EMPTY_DATA }: Props) => {
             {(data.policyLinks ?? []).map((link) => (
               <li key={link.href}>
                 <a
-                  className="transition-colors hover:text-[#D22730]"
+                  className="transition-colors hover:text-brand"
                   href={link.href}
                 >
                   {link.label}
@@ -178,7 +178,7 @@ const Footer = ({ data = EMPTY_DATA }: Props) => {
           </ul>
 
           {data.policyText && (
-            <p className="text-[16px] text-black/40">{data.policyText}</p>
+            <p className="text-[16px] text-textMuted">{data.policyText}</p>
           )}
         </div>
       </div>

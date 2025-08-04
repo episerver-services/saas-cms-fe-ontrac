@@ -1,5 +1,3 @@
-'use client'
-
 import Link from 'next/link'
 import Image from 'next/image'
 import type { FooterData } from './footer.types'
@@ -83,6 +81,8 @@ const Footer = ({ data = EMPTY_DATA }: Props) => {
               <ul className="mt-5 flex gap-3">
                 {(data.socialLinks ?? []).map((link) => {
                   const Icon = Icons[link.platform as keyof typeof Icons]
+                  if (!Icon) return null
+
                   return (
                     <li key={link.platform}>
                       <a
@@ -155,6 +155,8 @@ const Footer = ({ data = EMPTY_DATA }: Props) => {
           <div className="flex gap-3">
             {(data.socialLinks ?? []).map((link) => {
               const Icon = Icons[link.platform as keyof typeof Icons]
+              if (!Icon) return null
+
               return (
                 <a
                   key={link.platform}

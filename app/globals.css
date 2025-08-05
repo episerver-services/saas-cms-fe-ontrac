@@ -9,12 +9,6 @@
     --foreground: 0 0 0;
     --border: 229 231 235;
     --radius: 0.5rem;
-
-    /* Brand-specific colours */
-    --brand-red: 210 39 48; /* #D22730 */
-    --text-main: 16 24 32; /* #101820 */
-    --text-muted: 0 0 0 / 0.6; /* rgba(0,0,0,0.6) */
-    --border-light: 224 224 224;
   }
 
   .dark {

@@ -37,7 +37,6 @@ export const Icons = {
     </svg>
   ),
 
-  /** New: Facebook (glyph) */
   facebook: (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" {...props}>
       <path
@@ -47,7 +46,6 @@ export const Icons = {
     </svg>
   ),
 
-  /** New: X (formerly Twitter) */
   x: (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" {...props}>
       <path
@@ -57,7 +55,6 @@ export const Icons = {
     </svg>
   ),
 
-  /** New: YouTube */
   youtube: (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" {...props}>
       <path

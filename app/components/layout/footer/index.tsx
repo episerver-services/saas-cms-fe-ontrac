@@ -14,6 +14,8 @@ const EMPTY_DATA: FooterData = {
 
 type Props = { data?: FooterData }
 
+const LINKS_PER_COLUMN = 10
+
 /**
  * Footer component displaying brand logo, social links, navigation links,
  * and policy text for desktop and mobile layouts.
@@ -22,8 +24,8 @@ type Props = { data?: FooterData }
  */
 const Footer = ({ data = EMPTY_DATA }: Props) => {
   const links = data.footerLinks ?? []
-  const leftLinks = links.slice(0, 10)
-  const rightLinks = links.slice(10, 20)
+  const leftLinks = links.slice(0, LINKS_PER_COLUMN)
+  const rightLinks = links.slice(LINKS_PER_COLUMN, LINKS_PER_COLUMN * 2)
 
   return (
     <footer className="bg-background text-textMain py-20">
@@ -39,8 +41,8 @@ const Footer = ({ data = EMPTY_DATA }: Props) => {
               <Image
                 src={data.logo.src}
                 alt={data.logo.alt || 'OnTrac Logo'}
-                width={0}
-                height={0}
+                width={230}
+                height={40}
                 sizes="100vw"
                 className="h-auto w-full"
                 priority
@@ -61,8 +63,8 @@ const Footer = ({ data = EMPTY_DATA }: Props) => {
                 <Image
                   src={data.logo.src}
                   alt={data.logo.alt || 'Logo'}
-                  width={0}
-                  height={0}
+                  width={460}
+                  height={80}
                   sizes="100vw"
                   className="h-auto w-full"
                   priority
@@ -81,7 +83,12 @@ const Footer = ({ data = EMPTY_DATA }: Props) => {
               <ul className="mt-5 flex gap-3">
                 {(data.socialLinks ?? []).map((link) => {
                   const Icon = Icons[link.platform as keyof typeof Icons]
-                  if (!Icon) return null
+                  if (!Icon) {
+                    console.warn(
+                      `Icon not found for platform: ${link.platform}`
+                    )
+                    return null
+                  }
 
                   return (
                     <li key={link.platform}>
@@ -124,7 +131,7 @@ const Footer = ({ data = EMPTY_DATA }: Props) => {
 
           {/* RIGHT nav — 2 equal columns */}
           <nav
-            aria-label="Footer navigation"
+            aria-label="Footer navigation links"
             className="grid grid-cols-1 gap-x-16 gap-y-4 sm:grid-cols-2 lg:basis-[45%]"
           >
             {[leftLinks, rightLinks].map((group, idx) => (
@@ -155,7 +162,10 @@ const Footer = ({ data = EMPTY_DATA }: Props) => {
           <div className="flex gap-3">
             {(data.socialLinks ?? []).map((link) => {
               const Icon = Icons[link.platform as keyof typeof Icons]
-              if (!Icon) return null
+              if (!Icon) {
+                console.warn(`Icon not found for platform: ${link.platform}`)
+                return null
+              }
 
               return (
                 <a
@@ -176,8 +186,8 @@ const Footer = ({ data = EMPTY_DATA }: Props) => {
             {(data.policyLinks ?? []).map((link) => (
               <li key={link.href}>
                 <a
-                  className="transition-colors hover:text-brand"
                   href={link.href}
+                  className="transition-colors hover:text-brand"
                 >
                   {link.label}
                 </a>

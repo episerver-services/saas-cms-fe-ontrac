@@ -19,19 +19,16 @@ function isExternal(href: string) {
  * Returns Tailwind classes for button style variants.
  */
 function variantClasses(style: CTAButtonProps['style']) {
-  // Base shape + motion
   const base =
     'inline-flex items-center justify-center rounded-full px-6 py-3 text-[16px] font-bold uppercase transition-colors duration-200 ease-in-out'
 
   if (style === 'white') {
-    // White bg, dark text, subtle border, hover dim
     return twMerge(
       base,
       'bg-white text-textMain border border-borderLight hover:brightness-95'
     )
   }
 
-  // Default: red bg, white text, darken on hover
   return twMerge(
     base,
     'bg-brand text-white hover:bg-[rgb(var(--brand-red-hover))]'
@@ -54,11 +51,18 @@ export default function CTAButton({
   closeBarOnClick,
   onCloseBar,
 }: CTAButtonProps) {
+  // Bail out early if href is invalid
+  if (!link?.href || typeof link.href !== 'string') {
+    console.warn('CTAButton: Invalid or missing href', link)
+    return null
+  }
+
   const labelMobile = textMobile?.trim() || textDesktop
   const classes = twMerge(variantClasses(style), className)
+
   const rel =
     link.openIn === '_blank'
-      ? [link.rel, 'noopener', 'noreferrer'].filter(Boolean).join(' ')
+      ? ['noopener', 'noreferrer', link.rel].filter(Boolean).join(' ')
       : link.rel || undefined
 
   const handleClick = () => {
@@ -67,7 +71,6 @@ export default function CTAButton({
     }
   }
 
-  // Internal vs external handling
   if (!isExternal(link.href)) {
     return (
       <Link
@@ -76,9 +79,7 @@ export default function CTAButton({
         className={classes}
         onClick={handleClick}
       >
-        {/* Mobile label (<= lg) */}
         <span className="lg:hidden">{labelMobile}</span>
-        {/* Desktop label (>= lg) */}
         <span className="hidden lg:inline">{textDesktop}</span>
       </Link>
     )

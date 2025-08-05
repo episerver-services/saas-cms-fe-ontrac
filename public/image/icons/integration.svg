@@ -1,0 +1,22 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_1892_57747)">
+<path d="M30 6C31.104 6 32 6.896 32 8V16C32 17.104 31.104 18 30 18H26V22H34C35.104 22 36 22.896 36 24V30H40C41.104 30 42 30.896 42 32V40C42 41.104 41.104 42 40 42H28C26.896 42 26 41.104 26 40V32C26 30.896 26.896 30 28 30H32V26H16V30H20C21.104 30 22 30.896 22 32V40C22 41.104 21.104 42 20 42H8C6.896 42 6 41.104 6 40V32C6 30.896 6.896 30 8 30H12V24C12 22.896 12.896 22 14 22H22V18H18C16.896 18 16 17.104 16 16V8C16 6.896 16.896 6 18 6H30ZM18 34H10V38H18V34ZM38 34H30V38H38V34ZM28 10H20V14H28V10Z" fill="#CC2027"/>
+<mask id="path-2-inside-1_1892_57747" fill="white">
+<rect x="6" y="30" width="16" height="12" rx="2"/>
+</mask>
+<rect x="6" y="30" width="16" height="12" rx="2" stroke="#121212" stroke-width="8" mask="url(#path-2-inside-1_1892_57747)"/>
+<mask id="path-3-inside-2_1892_57747" fill="white">
+<rect x="16" y="6" width="16" height="12" rx="2"/>
+</mask>
+<rect x="16" y="6" width="16" height="12" rx="2" stroke="#121212" stroke-width="8" mask="url(#path-3-inside-2_1892_57747)"/>
+<mask id="path-4-inside-3_1892_57747" fill="white">
+<rect x="26" y="30" width="16" height="12" rx="2"/>
+</mask>
+<rect x="26" y="30" width="16" height="12" rx="2" stroke="#121212" stroke-width="8" mask="url(#path-4-inside-3_1892_57747)"/>
+</g>
+<defs>
+<clipPath id="clip0_1892_57747">
+<rect width="48" height="48" fill="white"/>
+</clipPath>
+</defs>
+</svg>

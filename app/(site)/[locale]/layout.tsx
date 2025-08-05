@@ -2,7 +2,7 @@ import { Suspense } from 'react'
 import { Geist, Geist_Mono } from 'next/font/google'
 import '../../globals.css'
 import { LOCALES } from '@/lib/optimizely/utils/language'
-import Header from '@/app/components/layout/header'
+import Header from '@/app/components/layout/header/header'
 import Footer from '@/app/components/layout/footer'
 import VitalsInit from '@/app/components/vitals-init'
 

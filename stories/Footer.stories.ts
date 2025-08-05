@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite'
 import Footer from '@/app/components/layout/footer'
-import type { FooterData } from '@/app/components/layout/footer.types'
+import type { FooterData } from '@/app/components/layout/footer/footer.types'
 
 const mockData: FooterData = {
   logo: {

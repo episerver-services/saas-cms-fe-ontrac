@@ -7,18 +7,15 @@ import type { CTAButtonProps } from './cta-button.types'
 /**
  * Determines if a link is external (URL, tel:, or mailto:).
  */
-function isExternal(href: string) {
-  return (
-    /^https?:\/\//i.test(href) ||
-    href.startsWith('mailto:') ||
-    href.startsWith('tel:')
-  )
-}
+const isExternal = (href: string): boolean =>
+  /^https?:\/\//i.test(href) ||
+  href.startsWith('mailto:') ||
+  href.startsWith('tel:')
 
 /**
  * Returns Tailwind classes for button style variants.
  */
-function variantClasses(style: CTAButtonProps['style']) {
+const variantClasses = (style: CTAButtonProps['style']) => {
   const base =
     'inline-flex items-center justify-center rounded-full px-6 py-3 text-[16px] font-bold uppercase transition-colors duration-200 ease-in-out'
 
@@ -42,7 +39,7 @@ function variantClasses(style: CTAButtonProps['style']) {
  * - Style variants (red, white)
  * - Optional "close bar" functionality
  */
-export default function CTAButton({
+const CTAButton = ({
   textDesktop,
   textMobile,
   link,
@@ -50,8 +47,7 @@ export default function CTAButton({
   className,
   closeBarOnClick,
   onCloseBar,
-}: CTAButtonProps) {
-  // Bail out early if href is invalid
+}: CTAButtonProps) => {
   if (!link?.href || typeof link.href !== 'string') {
     console.warn('CTAButton: Invalid or missing href', link)
     return null
@@ -99,3 +95,5 @@ export default function CTAButton({
     </a>
   )
 }
+
+export default CTAButton

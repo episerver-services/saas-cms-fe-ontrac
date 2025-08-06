@@ -3,7 +3,7 @@ import Footer from '@/app/components/layout/footer'
 
 import { footerMockData } from '@/app/components/layout/footer/footer.mock'
 
-export const MockData = footerMockData
+const MockData = footerMockData
 
 const meta: Meta<typeof Footer> = {
   title: 'Layout/Footer',

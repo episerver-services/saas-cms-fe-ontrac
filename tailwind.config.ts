@@ -22,6 +22,7 @@ export default {
         foreground: 'rgb(var(--foreground) / <alpha-value>)',
         border: 'rgb(var(--border) / <alpha-value>)',
         brand: 'rgb(var(--brand-red) / <alpha-value>)',
+        brandHover: 'rgb(var(--brand-red-hover) / <alpha-value>)',
         textMain: 'rgb(var(--text-main) / <alpha-value>)',
         textMuted: 'rgb(var(--text-muted))',
         borderLight: 'rgb(var(--border-light))',

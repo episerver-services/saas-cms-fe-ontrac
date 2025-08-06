@@ -1,8 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
-import { Button } from '@/app/components/ui/button'
-import Link from 'next/link'
+import CTAButton from '@/app/components/ui/cta-button'
 
 /**
  * A generic fallback UI for GraphQL or runtime rendering errors.
@@ -41,9 +40,10 @@ export default function FallbackErrorUI({
       <h1 className="text-3xl font-bold mb-2">{title}</h1>
       <p className="text-muted-foreground mb-6">{message}</p>
       {showHomeLink && (
-        <Button asChild>
-          <Link href="/">Go back home</Link>
-        </Button>
+        <CTAButton
+          textDesktop="Go back home"
+          link={{ href: '/', ariaLabel: 'Go back to homepage' }}
+        />
       )}
     </main>
   )

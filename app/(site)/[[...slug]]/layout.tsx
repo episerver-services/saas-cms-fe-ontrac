@@ -1,10 +1,12 @@
 import { Suspense } from 'react'
 import { Geist, Geist_Mono } from 'next/font/google'
 import '../../globals.css'
-import { LOCALES } from '@/lib/optimizely/utils/language'
-import Header from '@/app/components/layout/header'
+import Header from '@/app/components/layout/header/header'
 import Footer from '@/app/components/layout/footer'
 import VitalsInit from '@/app/components/vitals-init'
+
+// Temporary footer content for development preview
+import { footerMockData } from '@/app/components/layout/footer/footer.mock'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -17,43 +19,19 @@ const geistMono = Geist_Mono({
 })
 
 /**
- * Generates static parameters for locale-based routing.
- * Ensures that each supported locale will be statically rendered.
- *
- * @returns An array of locale param objects used by Next.js App Router
- */
-export function generateStaticParams() {
-  try {
-    return LOCALES.map((locale) => ({ locale }))
-  } catch (e) {
-    console.error(e)
-    return []
-  }
-}
-
-/**
- * Root layout component for all pages.
+ * Layout component for all pages.
  * Includes site-wide header, footer, global fonts, and layout structure.
  *
- * @param props - Component props containing locale and children
  * @param props.children - Page content to render inside layout
- * @param props.params - Async route parameters including locale
  * @returns HTML structure with layout wrappers and theming
  */
-export default async function RootLayout({
+export default function RootLayout({
   children,
-  params,
-}: Readonly<{
+}: {
   children: React.ReactNode
-  params: Promise<{ locale: string }>
-}>) {
-  const { locale } = await params
-
+}) {
   return (
-    <html
-      lang={locale}
-      className={`${geistSans.variable} ${geistMono.variable}`}
-    >
+    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
       <body className="antialiased">
         <VitalsInit />
         <a
@@ -69,7 +47,7 @@ export default async function RootLayout({
           {children}
         </main>
         <Suspense>
-          <Footer />
+          <Footer data={footerMockData} />
         </Suspense>
       </body>
     </html>

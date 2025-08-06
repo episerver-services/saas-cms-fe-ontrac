@@ -1,6 +1,5 @@
-import { Button } from '@/app/components/ui/button'
-import Link from 'next/link'
-import { Metadata } from 'next'
+import CTAButton from '@/app/components/ui/cta-button'
+import type { Metadata } from 'next'
 
 /**
  * SEO metadata for the 404 page.
@@ -28,11 +27,12 @@ export default function NotFound() {
         404 – Page Not Found
       </h1>
       <p className="mb-8 text-xl text-muted-foreground">
-        Oops! The page you are looking for does not exist.
+        Oops! The page you’re looking for doesn’t exist.
       </p>
-      <Button asChild>
-        <Link href="/">Go back home</Link>
-      </Button>
+      <CTAButton
+        textDesktop="Go back home"
+        link={{ href: '/', ariaLabel: 'Go back to homepage' }}
+      />
     </main>
   )
 }

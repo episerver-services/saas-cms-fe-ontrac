@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -11,9 +13,10 @@
     --radius: 0.5rem;
 
     /* Brand-specific colours */
-    --brand-red: 210 39 48; /* #D22730 */
-    --text-main: 16 24 32; /* #101820 */
-    --text-muted: 0 0 0 / 0.6; /* rgba(0,0,0,0.6) */
+    --brand-red: 210 39 48;          /* #D22730 */
+    --brand-red-hover: 170 32 40;    /* #AA2028 */
+    --text-main: 16 24 32;           /* #101820 */
+    --text-muted: 0 0 0 / 0.6;       /* rgba(0,0,0,0.6) */
     --border-light: 224 224 224;
   }
 
@@ -29,6 +32,6 @@
 
   body {
     @apply bg-background text-foreground;
-    font-family: system-ui, sans-serif;
+    font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   }
 }

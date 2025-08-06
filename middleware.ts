@@ -150,5 +150,5 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
  * This excludes API routes, static assets, and favicon.
  */
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
+  matcher: ['/((?!api|_next/static|_next/image|favicon.png).*)'],
 }

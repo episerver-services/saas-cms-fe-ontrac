@@ -1,9 +1,8 @@
 'use client'
 
 import { useEffect } from 'react'
-import Link from 'next/link'
-import { Button } from '@/app/components/ui/button'
-import { Metadata } from 'next'
+import CTAButton from '@/app/components/ui/cta-button'
+import type { Metadata } from 'next'
 
 /**
  * SEO metadata for the 500 error page.
@@ -18,15 +17,12 @@ export const metadata: Metadata = {
 
 /**
  * Renders the 500 "Unexpected Error" page.
- * Displayed when an error occurs during rendering.
- *
- * @param error - The runtime error object
- * @returns The error page UI
+ * Logs error and offers retry and home navigation.
  */
 export default function ErrorPage({ error }: { error: Error }) {
   useEffect(() => {
     console.error('Unexpected error occurred:', error)
-    // Optionally send to Sentry or other monitoring service
+    // Optional: Send to monitoring service like Sentry
   }, [error])
 
   return (
@@ -39,15 +35,19 @@ export default function ErrorPage({ error }: { error: Error }) {
         500 – Unexpected Error
       </h1>
       <p className="mb-8 text-xl text-muted-foreground">
-        Something went wrong. We are working on it.
+        Something went wrong. We’re working on it.
       </p>
+
       <div className="flex gap-4">
-        <Button asChild>
-          <Link href="/">Go back home</Link>
-        </Button>
-        <Button variant="ghost" onClick={() => window.location.reload()}>
-          Try again
-        </Button>
+        <CTAButton
+          textDesktop="Go back home"
+          link={{ href: '/', ariaLabel: 'Homepage' }}
+        />
+        <CTAButton
+          textDesktop="Try again"
+          link={{ href: '#' }}
+          onClick={() => window.location.reload()}
+        />
       </div>
     </main>
   )

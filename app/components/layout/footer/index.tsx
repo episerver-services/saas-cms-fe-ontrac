@@ -1,10 +1,11 @@
 import Link from 'next/link'
-import Image from 'next/image'
+// import Image from 'next/image'
 import type { FooterData } from './footer.types'
 import { Icons } from '@/app/components/ui/icons'
+import logoSrc from '@/public/image/logo.svg'
 
 const EMPTY_DATA: FooterData = {
-  logo: { src: '/image/logo.svg', alt: 'OnTrac', href: '/' },
+  logo: { src: logoSrc, alt: 'OnTrac', href: '/' },
   footerLinks: [],
   policyLinks: [],
   policyText: '',
@@ -38,7 +39,8 @@ const Footer = ({ data = EMPTY_DATA }: Props) => {
               aria-label="Homepage"
               className="inline-block w-[230px]"
             >
-              <Image
+              {/* @todo - use next/image when connecting to the cms */}
+              {/* <Image
                 src={data.logo.src}
                 alt={data.logo.alt || 'OnTrac Logo'}
                 width={230}
@@ -46,6 +48,14 @@ const Footer = ({ data = EMPTY_DATA }: Props) => {
                 sizes="100vw"
                 className="h-auto w-full"
                 priority
+              /> */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={data.logo.src}
+                alt={data.logo.alt || 'OnTrac Logo'}
+                width={230}
+                height={40}
+                className="h-auto w-full"
               />
             </Link>
           </div>
@@ -60,7 +70,8 @@ const Footer = ({ data = EMPTY_DATA }: Props) => {
                 aria-label="Homepage"
                 className="inline-block w-[350px] lg:w-[400px] xl:w-[460px]"
               >
-                <Image
+                {/* @todo - use next/image when connecting to the cms */}
+                {/* <Image
                   src={data.logo.src}
                   alt={data.logo.alt || 'Logo'}
                   width={460}
@@ -68,6 +79,14 @@ const Footer = ({ data = EMPTY_DATA }: Props) => {
                   sizes="100vw"
                   className="h-auto w-full"
                   priority
+                /> */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={data.logo.src}
+                  alt={data.logo.alt || 'Logo'}
+                  width={460}
+                  height={80}
+                  className="h-auto w-full"
                 />
               </Link>
             )}

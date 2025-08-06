@@ -6,6 +6,8 @@ import Header from '@/app/components/layout/header/header'
 import Footer from '@/app/components/layout/footer'
 import VitalsInit from '@/app/components/vitals-init'
 
+import { footerMockData } from '@/app/components/layout/footer/footer.mock'
+
 const geistSans = Geist({
   variable: '--font-geist-sans',
   subsets: ['latin'],
@@ -40,14 +42,14 @@ export function generateStaticParams() {
  * @param props.params - Async route parameters including locale
  * @returns HTML structure with layout wrappers and theming
  */
-export default async function RootLayout({
+export default function RootLayout({
   children,
   params,
-}: Readonly<{
+}: {
   children: React.ReactNode
-  params: Promise<{ locale: string }>
-}>) {
-  const { locale } = await params
+  params: { locale: string }
+}) {
+  const { locale } = params
 
   return (
     <html
@@ -69,7 +71,7 @@ export default async function RootLayout({
           {children}
         </main>
         <Suspense>
-          <Footer />
+          <Footer data={footerMockData} />
         </Suspense>
       </body>
     </html>

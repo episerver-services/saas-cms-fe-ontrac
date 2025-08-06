@@ -23,6 +23,7 @@ export type CTAButtonProps = {
   link: LinkField
   style?: CTAButtonStyle // default 'red'
   className?: string
+  onClick?: () => void
   /** If true, call onCloseBar() after click. Parent can close Notification Bar. */
   closeBarOnClick?: boolean
   /** Optional hook the parent (notification bar) provides */

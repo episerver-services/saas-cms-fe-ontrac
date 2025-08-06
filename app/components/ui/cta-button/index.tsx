@@ -6,6 +6,9 @@ import type { CTAButtonProps } from './cta-button.types'
 
 /**
  * Determines if a link is external (URL, tel:, or mailto:).
+ *
+ * @param href - The link to check
+ * @returns True if the link is external
  */
 const isExternal = (href: string): boolean =>
   /^https?:\/\//i.test(href) ||
@@ -14,6 +17,9 @@ const isExternal = (href: string): boolean =>
 
 /**
  * Returns Tailwind classes for button style variants.
+ *
+ * @param style - The style variant: "red" or "white"
+ * @returns Combined Tailwind class string
  */
 const variantClasses = (style: CTAButtonProps['style']) => {
   const base =
@@ -37,7 +43,13 @@ const variantClasses = (style: CTAButtonProps['style']) => {
  * - Internal and external links
  * - Responsive label text (desktop + mobile)
  * - Style variants (red, white)
- * - Optional "close bar" functionality
+ * - Optional click handler (onClick)
+ * - Optional close-bar behaviour
+ *
+ * If no `link.href` is provided, it renders a <button> element instead of a <Link>/<a>.
+ *
+ * @param props - CTAButtonProps
+ * @returns Rendered CTA element
  */
 const CTAButton = ({
   textDesktop,
@@ -45,28 +57,39 @@ const CTAButton = ({
   link,
   style = 'red',
   className,
+  onClick,
   closeBarOnClick,
   onCloseBar,
 }: CTAButtonProps) => {
-  if (!link?.href || typeof link.href !== 'string') {
-    console.warn('CTAButton: Invalid or missing href', link)
-    return null
-  }
-
   const labelMobile = textMobile?.trim() || textDesktop
   const classes = twMerge(variantClasses(style), className)
+
+  /**
+   * Combined click handler for manual and close-bar clicks.
+   */
+  const handleClick = () => {
+    onClick?.()
+    if (closeBarOnClick && typeof onCloseBar === 'function') {
+      onCloseBar()
+    }
+  }
+
+  // No link: Render as button (used for "Try again" etc.)
+  if (!link?.href) {
+    return (
+      <button type="button" className={classes} onClick={handleClick}>
+        <span className="lg:hidden">{labelMobile}</span>
+        <span className="hidden lg:inline">{textDesktop}</span>
+      </button>
+    )
+  }
 
   const rel =
     link.openIn === '_blank'
       ? ['noopener', 'noreferrer', link.rel].filter(Boolean).join(' ')
       : link.rel || undefined
 
-  const handleClick = () => {
-    if (closeBarOnClick && typeof onCloseBar === 'function') {
-      onCloseBar()
-    }
-  }
-
+  // Internal link
   if (!isExternal(link.href)) {
     return (
       <Link
@@ -81,6 +104,7 @@ const CTAButton = ({
     )
   }
 
+  // External link
   return (
     <a
       href={link.href}

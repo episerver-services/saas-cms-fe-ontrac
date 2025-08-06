@@ -1,5 +1,4 @@
-import { Button } from '@/app/components/ui/button'
-import Link from 'next/link'
+import CTAButton from '@/app/components/ui/cta-button'
 import { Metadata } from 'next'
 
 /**
@@ -30,9 +29,10 @@ export default function NotFound() {
       <p className="mb-8 text-xl text-muted-foreground">
         Oops! The page you are looking for does not exist.
       </p>
-      <Button asChild>
-        <Link href="/">Go back home</Link>
-      </Button>
+      <CTAButton
+        textDesktop="Go back home"
+        link={{ href: '/', ariaLabel: 'Go back to homepage' }}
+      />
     </main>
   )
 }

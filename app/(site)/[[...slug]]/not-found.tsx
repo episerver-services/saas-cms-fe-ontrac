@@ -1,5 +1,5 @@
 import CTAButton from '@/app/components/ui/cta-button'
-import { Metadata } from 'next'
+import type { Metadata } from 'next'
 
 /**
  * SEO metadata for the 404 page.
@@ -27,7 +27,7 @@ export default function NotFound() {
         404 – Page Not Found
       </h1>
       <p className="mb-8 text-xl text-muted-foreground">
-        Oops! The page you are looking for does not exist.
+        Oops! The page you’re looking for doesn’t exist.
       </p>
       <CTAButton
         textDesktop="Go back home"

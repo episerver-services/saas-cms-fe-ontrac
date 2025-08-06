@@ -17,10 +17,12 @@ export const metadata: Metadata = {
 
 /**
  * Renders the 500 "Unexpected Error" page.
+ * Logs error and offers retry and home navigation.
  */
 export default function ErrorPage({ error }: { error: Error }) {
   useEffect(() => {
     console.error('Unexpected error occurred:', error)
+    // Optional: Send to monitoring service like Sentry
   }, [error])
 
   return (
@@ -33,23 +35,17 @@ export default function ErrorPage({ error }: { error: Error }) {
         500 – Unexpected Error
       </h1>
       <p className="mb-8 text-xl text-muted-foreground">
-        Something went wrong. We are working on it.
+        Something went wrong. We’re working on it.
       </p>
 
       <div className="flex gap-4">
         <CTAButton
           textDesktop="Go back home"
-          link={{
-            href: '/',
-            ariaLabel: 'Homepage',
-          }}
+          link={{ href: '/', ariaLabel: 'Homepage' }}
         />
         <CTAButton
           textDesktop="Try again"
-          link={{
-            href: '#',
-            ariaLabel: 'Try again',
-          }}
+          link={{ href: '#' }}
           onClick={() => window.location.reload()}
         />
       </div>

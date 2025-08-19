@@ -1,3 +1,8 @@
+// Placeholder Header component.
+// Please follow the structure of `footer/`:
+// - Add `header.types.ts` for props
+// - Add `header.mock.ts` for mock data
+// - Add Storybook integration
 import Link from 'next/link'
 
 export default function Header() {

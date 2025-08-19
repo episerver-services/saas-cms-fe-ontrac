@@ -3,29 +3,26 @@ import DraftModeCmsPage from '@/app/components/draft/draft-mode-cms-page'
 import { DraftModeLoader } from '@/app/components/draft/draft-mode-loader'
 import FallbackErrorUI from '@/app/components/errors/fallback-error-ui'
 import { optimizely } from '@/lib/optimizely/fetch'
-import {
-  getValidLocale,
-  mapPathWithoutLocale,
-} from '@/lib/optimizely/utils/language'
+import { mapPathWithoutLocale } from '@/lib/optimizely/utils/language'
 import { generateAlternates } from '@/lib/utils/metadata'
+import { resolveSlugAndLocale } from '@/lib/utils/routing'
 import { Metadata } from 'next'
 import { draftMode } from 'next/headers'
 import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
 
 /**
- * Generates SEO metadata for a given locale and slug.
- * Attempts to retrieve metadata from CMSPage content.
+ * Generates SEO metadata for a given CMS page based on the locale and slug.
+ * Falls back to static defaults or minimal metadata when previewing or in error states.
  *
- * @param props - Async props containing locale and slug from route params
- * @returns Metadata object used in the <head> section of the page
+ * @param props - Object containing the locale and slug from dynamic route params.
+ * @returns Metadata used in the <head> of the rendered page.
  */
 export async function generateMetadata(props: {
-  params: Promise<{ locale: string; slug?: string }>
+  params: Promise<{ locale: string; slug?: string[] }>
 }): Promise<Metadata> {
-  const { locale, slug = '' } = await props.params
-  const locales = getValidLocale(locale)
-  const formattedSlug = `/${slug}`
+  const { locale, slug } = await props.params
+  const { localeCode, formattedSlug } = resolveSlugAndLocale(locale, slug)
 
   if (process.env.IS_BUILD === 'true') {
     return {
@@ -36,7 +33,7 @@ export async function generateMetadata(props: {
 
   try {
     const pageData = await optimizely.getPageByURL({
-      locales: [locales],
+      locales: [localeCode],
       slug: formattedSlug,
     })
 
@@ -54,20 +51,20 @@ export async function generateMetadata(props: {
   } catch (error) {
     console.error('generateMetadata fallback:', error)
     return {
-      title: `Optimizely Page${slug ? ` - ${slug}` : ''}`,
+      title: `Optimizely Page${slug ? ` - ${slug.join('/')}` : ''}`,
     }
   }
 }
 
 /**
- * Generates all static paths (slug + locale) for prerendering.
- * Falls back to dynamic rendering if running inside a Docker build.
+ * Generates all static paths (slug arrays) for ISR or static export.
+ * Skips path generation if running inside a Docker container build.
  *
- * @returns An array of static params for each known CMS route
+ * @returns An array of objects containing `slug` arrays for prerendering.
  */
 export async function generateStaticParams() {
   if (process.env.IS_BUILD === 'true') {
-    return [] // Skip during Docker build
+    return []
   }
 
   try {
@@ -78,7 +75,6 @@ export async function generateStaticParams() {
     const uniquePaths = new Set<string>()
     paths.forEach((path) => {
       const metadata = path?._metadata
-
       if (
         metadata &&
         typeof metadata === 'object' &&
@@ -90,7 +86,7 @@ export async function generateStaticParams() {
     })
 
     return Array.from(uniquePaths).map((slug) => ({
-      slug,
+      slug: slug.split('/').filter(Boolean),
     }))
   } catch (e) {
     console.error('generateStaticParams fallback:', e)
@@ -99,24 +95,24 @@ export async function generateStaticParams() {
 }
 
 /**
- * Renders a page from a CMS content page.
- * Supports draft mode rendering and falls back to notFound() if no content is found.
+ * Main page renderer for CMSPage content.
+ * Determines whether to render draft-mode or published content,
+ * and falls back to notFound or error UI appropriately.
  *
- * @param props - Route params including locale and slug
- * @returns React component tree for the rendered page
+ * @param props - Object containing the locale and slug route parameters.
+ * @returns The rendered React component tree for the page.
  */
 export default async function CmsPage(props: {
-  params: Promise<{ locale: string; slug?: string }>
+  params: Promise<{ locale: string; slug?: string[] }>
 }) {
-  const { locale, slug = '' } = await props.params
-  const locales = getValidLocale(locale)
-  const formattedSlug = `/${slug}`
+  const { locale, slug } = await props.params
+  const { localeCode, formattedSlug } = resolveSlugAndLocale(locale, slug)
 
   const { isEnabled: isDraftModeEnabled } = await draftMode()
   if (isDraftModeEnabled) {
     return (
       <Suspense fallback={<DraftModeLoader />}>
-        <DraftModeCmsPage locales={locales} slug={formattedSlug} />
+        <DraftModeCmsPage locales={localeCode} slug={formattedSlug} />
       </Suspense>
     )
   }
@@ -124,7 +120,7 @@ export default async function CmsPage(props: {
   let page = null
   try {
     const pageData = await optimizely.getPageByURL({
-      locales: [locales],
+      locales: [localeCode],
       slug: formattedSlug,
     })
     page = pageData?.CMSPage?.item ?? null
@@ -139,11 +135,14 @@ export default async function CmsPage(props: {
   const blocks = (page.blocks ?? []).filter(Boolean)
 
   return (
-    <Suspense>
+    <Suspense fallback={<div>Loading content...</div>}>
       <ContentAreaMapper blocks={blocks} />
     </Suspense>
   )
 }
 
-// Enable ISR (Incremental Static Regeneration)
+/**
+ * Defines the ISR (Incremental Static Regeneration) interval for this route.
+ * Set to revalidate every 60 seconds.
+ */
 export const revalidate = 60

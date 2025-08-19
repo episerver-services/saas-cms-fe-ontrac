@@ -20,7 +20,7 @@ export type CTAButtonStyle = 'red' | 'white'
 export type CTAButtonProps = {
   textDesktop: string
   textMobile?: string // falls back to textDesktop
-  link: LinkField
+  link?: LinkField
   style?: CTAButtonStyle // default 'red'
   className?: string
   onClick?: () => void

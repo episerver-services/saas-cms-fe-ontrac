@@ -1,6 +1,6 @@
 'use client'
 
-import { Button } from '../ui/button'
+import CTAButton from '@/app/components/ui/cta-button'
 import { useRouter } from 'next/navigation'
 
 /**
@@ -17,7 +17,7 @@ const DraftActions = () => {
   const handleDisableDraft = async () => {
     try {
       await fetch('/api/draft/disable')
-      router.refresh() // Optional: refresh to reflect exit
+      router.refresh()
     } catch (err) {
       console.error('Failed to disable draft mode:', err)
     }
@@ -25,8 +25,8 @@ const DraftActions = () => {
 
   return (
     <div className="flex justify-end gap-5 p-4">
-      <Button onClick={() => router.refresh()}>Refresh Page</Button>
-      <Button onClick={handleDisableDraft}>Disable Draft</Button>
+      <CTAButton textDesktop="Refresh Page" onClick={() => router.refresh()} />
+      <CTAButton textDesktop="Disable Draft" onClick={handleDisableDraft} />
     </div>
   )
 }

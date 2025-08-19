@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 
 /**
  * SEO metadata for the 404 page.
+ * Prevents indexing and signals to crawlers this page should not be followed.
  */
 export const metadata: Metadata = {
   title: 'Page Not Found',
@@ -14,7 +15,10 @@ export const metadata: Metadata = {
 
 /**
  * Renders the 404 "Not Found" error page.
- * Displayed when a route does not match an existing page.
+ * This page is displayed when no CMS content is found or a route fails to resolve.
+ * Includes a visually prominent heading, descriptive message, and a CTA back to homepage.
+ *
+ * @returns A styled <main> element representing the 404 UI.
  */
 export default function NotFound() {
   return (

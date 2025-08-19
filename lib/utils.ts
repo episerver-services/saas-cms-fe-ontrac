@@ -3,38 +3,38 @@ import { type ClassValue, clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 
 /**
- * Creates a full URL string from a pathname and a set of query parameters.
+ * Constructs a complete URL from a pathname and a set of query parameters.
  *
- * @param pathname - The base path of the URL (e.g., `/search`).
- * @param params - A URLSearchParams or ReadonlyURLSearchParams instance.
- * @returns A complete URL with query string (e.g., `/search?q=test&page=2`).
+ * @param pathname - The base route (e.g., `/search`).
+ * @param params - A `URLSearchParams` or `ReadonlyURLSearchParams` instance.
+ * @returns A full URL with query string (e.g., `/search?q=foo&page=1`).
  */
-export const createUrl = (
+export function createUrl(
   pathname: string,
   params: URLSearchParams | ReadonlyURLSearchParams
-): string => {
-  const paramsString = params.toString()
-  const queryString = `${paramsString.length ? '?' : ''}${paramsString}`
-  return `${pathname}${queryString}`
+): string {
+  const query = params.toString()
+  return `${pathname}${query ? `?${query}` : ''}`
 }
 
 /**
- * Ensures a given pathname starts with a leading slash.
+ * Ensures a pathname starts with a leading slash.
  *
- * @param pathname - A URL path (e.g., `about` or `/about`).
- * @returns The path prefixed with `/` if not already present.
+ * @param path - Any path fragment (e.g., `about` or `/about`).
+ * @returns The same path with `/` prepended if needed.
  */
-export const leadingSlashUrlPath = (pathname: string): string => {
-  return `${pathname.startsWith('/') ? '' : '/'}${pathname}`
+export function withLeadingSlash(path: string): string {
+  return path.startsWith('/') ? path : `/${path}`
 }
 
 /**
- * Merges Tailwind CSS class names conditionally.
- * Combines `clsx` for logic with `tailwind-merge` for deduplication.
+ * Merges and deduplicates Tailwind CSS class names.
  *
- * @param inputs - A list of class names, boolean expressions, or arrays of these.
- * @returns A merged string of valid Tailwind classes.
+ * Combines `clsx` for conditional logic and `tailwind-merge` for conflict resolution.
+ *
+ * @param classes - One or more class strings or expressions.
+ * @returns A deduplicated and merged className string.
  */
-export function cn(...inputs: ClassValue[]): string {
-  return twMerge(clsx(inputs))
+export function cn(...classes: ClassValue[]): string {
+  return twMerge(clsx(classes))
 }

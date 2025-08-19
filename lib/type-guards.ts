@@ -1,5 +1,6 @@
 /**
- * Describes the shape of a typical Vercel-style error object.
+ * Describes the shape of a typical Vercel-style error object
+ * as returned by middleware, Next.js handlers, or API routes.
  */
 export interface VercelErrorLike {
   status: number
@@ -8,44 +9,47 @@ export interface VercelErrorLike {
 }
 
 /**
- * Type guard that checks if the given value is a plain object (not null, not an array).
+ * Type guard that checks whether a value is a plain object (not null, not an array).
  *
- * @param object - The value to check
- * @returns True if the value is a plain object
+ * Useful for runtime validation of unknown values before property access.
+ *
+ * @param value - The value to validate.
+ * @returns True if the value is a plain object.
  */
-export const isObject = (
-  object: unknown
-): object is Record<string, unknown> => {
-  return typeof object === 'object' && object !== null && !Array.isArray(object)
+export const isObject = (value: unknown): value is Record<string, unknown> => {
+  return typeof value === 'object' && value !== null && !Array.isArray(value)
 }
 
 /**
- * Type guard to determine whether an error-like object matches the VercelErrorLike interface.
- * It handles both native Error instances and objects that inherit from Error.
+ * Type guard that determines whether an unknown error object matches the VercelErrorLike interface.
  *
- * @param error - The value to test
- * @returns True if the value appears to be a Vercel-like error
+ * It supports:
+ * - Native `Error` instances
+ * - Objects extending from `Error`
+ * - POJOs with a matching prototype chain
+ *
+ * @param error - The value to test.
+ * @returns True if the error is compatible with VercelErrorLike.
  */
 export const isVercelError = (error: unknown): error is VercelErrorLike => {
   if (!isObject(error)) return false
-
   if (error instanceof Error) return true
-
-  return findError(error)
+  return isErrorLikeViaPrototype(error)
 }
 
 /**
- * Recursively checks the prototype chain to detect if an object is derived from Error.
+ * Recursively traverses an object's prototype chain to detect inheritance from `Error`.
  *
- * @param error - The object whose prototype chain will be traversed
- * @returns True if an Error is found in the prototype chain
+ * This handles edge cases like custom error classes or errors passed across runtime boundaries.
+ *
+ * @param obj - The object to inspect.
+ * @returns True if any prototype in the chain resembles an `Error`.
  */
-function findError<T extends object>(error: T): boolean {
-  if (Object.prototype.toString.call(error) === '[object Error]') {
+function isErrorLikeViaPrototype<T extends object>(obj: T): boolean {
+  if (Object.prototype.toString.call(obj) === '[object Error]') {
     return true
   }
 
-  const prototype = Object.getPrototypeOf(error) as T | null
-
-  return prototype === null ? false : findError(prototype)
+  const prototype = Object.getPrototypeOf(obj) as T | null
+  return prototype !== null ? isErrorLikeViaPrototype(prototype) : false
 }

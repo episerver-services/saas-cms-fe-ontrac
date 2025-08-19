@@ -7,46 +7,45 @@ export const DEFAULT_LOCALE: Locales = 'en'
 
 /**
  * List of supported locales for the site.
- * Extend this array if your CMS and frontend support additional locales.
+ * Extend this array as needed to support additional languages.
  */
 export const LOCALES: Locales[] = ['en']
 
 /**
  * Validates a provided locale string against the list of supported locales.
- * Falls back to DEFAULT_LOCALE if the input is invalid.
+ * Returns a valid `Locales` enum value or falls back to the default locale.
  *
  * @param locale - The locale string to validate (e.g., 'en', 'fr', 'de').
- * @returns A valid `Locales` type, guaranteed to be supported by the system.
+ * @returns A safe `Locales` value that exists in the supported set.
  */
-export const getValidLocale = (locale: string): Locales => {
+export function getValidLocale(locale: string): Locales {
   return LOCALES.includes(locale as Locales)
     ? (locale as Locales)
     : DEFAULT_LOCALE
 }
 
 /**
- * Retrieves all supported locales.
+ * Returns all supported locales.
  *
- * @returns An array of all valid locales.
+ * @returns An array of `Locales` enum values.
  */
-export const getLocales = (): Locales[] => {
+export function getLocales(): Locales[] {
   return LOCALES
 }
 
 /**
- * Removes the locale prefix from a path string.
- * For example, `/en/about` becomes `about`.
+ * Removes a locale prefix from a given path string if it exists.
+ * For example: `/en/about` → `about`
  *
- * @param path - A path that may include a locale prefix.
- * @returns The path without a locale prefix.
+ * @param path - A URL pathname that may include a locale segment.
+ * @returns The path string without the locale prefix.
  */
-export const mapPathWithoutLocale = (path: string): string => {
+export function mapPathWithoutLocale(path: string): string {
   const parts = path.split('/').filter(Boolean)
 
-  // If the first segment is a known locale, remove it.
   if (LOCALES.includes(parts[0] as Locales)) {
     parts.shift()
   }
 
-  return `${parts.join('/')}`
+  return parts.join('/')
 }

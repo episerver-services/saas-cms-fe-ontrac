@@ -12,6 +12,24 @@ import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
 
 /**
+ * Type guard to check for modified metadata on CMS content.
+ * Used to determine if a page is valid or should 404.
+ *
+ * @param page - The CMS page object to inspect
+ * @returns True if _metadata.modified is present and valid
+ */
+function hasModifiedMetadata(
+  page: unknown
+): page is { _metadata: { modified: string } } {
+  return (
+    typeof page === 'object' &&
+    page !== null &&
+    '_metadata' in page &&
+    typeof (page as any)._metadata?.modified === 'string'
+  )
+}
+
+/**
  * Generates SEO metadata for a given CMS page based on the locale and slug.
  * Falls back to static defaults or minimal metadata when previewing or in error states.
  *
@@ -32,10 +50,17 @@ export async function generateMetadata(props: {
   }
 
   try {
-    const pageData = await optimizely.getPageByURL({
-      locales: [localeCode],
-      slug: formattedSlug,
-    })
+    const { isEnabled: isDraftModeEnabled } = await draftMode()
+
+    const pageData = await optimizely.getPageByURL(
+      {
+        locales: [localeCode],
+        slug: formattedSlug,
+      },
+      {
+        preview: isDraftModeEnabled,
+      }
+    )
 
     const page = pageData?.CMSPage?.item
     if (!page) {
@@ -119,16 +144,21 @@ export default async function CmsPage(props: {
 
   let page = null
   try {
-    const pageData = await optimizely.getPageByURL({
-      locales: [localeCode],
-      slug: formattedSlug,
-    })
+    const pageData = await optimizely.getPageByURL(
+      {
+        locales: [localeCode],
+        slug: formattedSlug,
+      },
+      {
+        preview: isDraftModeEnabled,
+      }
+    )
     page = pageData?.CMSPage?.item ?? null
   } catch (err) {
     return <FallbackErrorUI error={err} />
   }
 
-  if (!page?._modified) {
+  if (!page || !hasModifiedMetadata(page)) {
     return notFound()
   }
 

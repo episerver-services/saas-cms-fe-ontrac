@@ -1,3 +1,6 @@
+// This is a mock up of the current footer on the live site. The new styles will need to be added to the Tailwind
+// config file and global CSS file. A lot of the mock data and layout can be reused. As of this typing
+// the new site style and layout had not been finalised.
 import Link from 'next/link'
 // import Image from 'next/image'
 import type { FooterData } from './footer.types'

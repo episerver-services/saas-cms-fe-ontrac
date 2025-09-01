@@ -3,23 +3,26 @@
 This is the production-ready **Next.js 15** front-end for **OnTrac**, powered by the **Optimizely SaaS CMS Delivery API**.  
 It integrates layout-aware GraphQL content rendering with a clean architecture optimised for performance, testing, and scalability.
 
-The current live site can be found here: https://www.ontrac.com/
+The current production site is live at: https://www.ontrac.com/  
+_Note: This repo powers the future rebuild, which is still under active development._
 
 ---
 
 ## 🧩 Features
 
-• ✅ GraphQL content querying from Optimizely SaaS CMS  
+• ✅ GraphQL client + codegen setup (ready for CMS integration)
 • 🔧 Environment-based layout + homepage config  
 • 🐳 Docker-optimised CI/CD and deploy flow  
 • 🧪 Unit tests with Jest + React Testing Library  
 • 🧪 E2E browser testing via Playwright  
 • 🧪 BDD testing via Cucumber + Gherkin  
-• 📐 GraphQL SDK codegen using graphql-codegen  
+• 📐 `codegen.ts` configured for future schema + fragment generation  
 • 📄 SEO metadata generation from CMS  
 • 👓 Draft mode and preview route handling  
 • 📂 Clear folder structure for blocks and layouts  
 • 🎨 Storybook integration for component development
+• 🚧 Component mapping and CMS integration in progress  
+• 📦 Placeholder mocks and stub components included for handoff
 
 ---
 
@@ -183,17 +186,21 @@ docker run -p 3000:3000 --env-file .env.local saas-cms-fe-ontrac
 
 ---
 
-## 📌 Known Gaps & Next Steps
+## ⚠️ Handoff Notes
 
-• [ ] Expand unit test coverage  
-• [ ] Add E2E tests for fallback and preview mode  
-• [ ] See `docs/project-status.md` for implementation tracker  
-• [ ] Improve Storybook theme support if theming is added
+The current implementation includes:
 
----
+✅ All architectural scaffolding for a production-grade head  
+✅ GraphQL client and codegen setup (no schema integrated yet)  
+✅ Routing, layout, draft mode, and metadata support  
+✅ Placeholder blocks and mock data for Storybook development
 
-## 👨‍💻 Maintainer
+The following is expected to be completed by the next team:
 
-**Owen Liversidge**  
-Frontend Architect – Optimizely SaaS CMS  
-Weymouth, UK | owen.liversidge@optimizely.com
+❌ CMS schema integration and GraphQL fragment generation  
+❌ Component development and mapping to CMS content types  
+❌ Styling and brand theming  
+❌ Visual Builder layout rendering  
+❌ Personalization, experiments, and DAM asset support
+
+See `/docs/project-status.md` for a detailed task tracker.

@@ -1,4 +1,4 @@
-import '../../globals.css'
+import '@/app/globals.css'
 import { Geist, Geist_Mono } from 'next/font/google'
 import Script from 'next/script'
 import DraftActions from '@/app/components/draft/draft-actions'

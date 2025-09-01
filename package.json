@@ -6,8 +6,6 @@
     "clean": "rm -rf .next/cache",
     "prepare": "husky install",
     "dev": "pnpm clean && next dev",
-    "dev:custom": "dotenv -e .env.custom-styling.local -- pnpm dev",
-    "dev:visual": "dotenv -e .env.visual-builder.local -- pnpm dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",

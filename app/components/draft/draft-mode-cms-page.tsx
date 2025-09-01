@@ -28,37 +28,41 @@ export default async function DraftModeCmsPage({
     { preview: true }
   )
 
-  const cmsPageItems = CMSPage?.items
+  const cmsPageItems = CMSPage?.items?.filter(Boolean)
 
-  // If no CMS pages, try fallback to Visual Builder experience
+  // If no CMS pages found, attempt to load a Visual Builder Experience
   if (!cmsPageItems?.length) {
+    console.info('No CMS draft found, attempting to load VB experience.')
+
     const { SEOExperience } =
       await optimizely.GetAllVisualBuilderVesrionsBySlug(
         { locales: [validLocale], slug },
         { preview: true }
       )
 
-    const experiences = SEOExperience?.items as
+    const experiences = SEOExperience?.items?.filter(Boolean) as
       | SafeVisualBuilderExperience[]
       | undefined
 
-    const maxExperienceVersion = experiences
-      ? Math.max(
-          ...experiences.map((item) =>
-            parseInt(item?._metadata?.version || '0', 10)
-          )
-        )
-      : -1
+    const latestExperience =
+      experiences?.reduce<SafeVisualBuilderExperience | null>(
+        (latest, current) => {
+          if (!current || !current._metadata?.version) return latest
 
-    const experience = experiences?.find(
-      (exp) =>
-        parseInt(exp?._metadata?.version || '0', 10) === maxExperienceVersion
-    )
+          const currentVersion = parseInt(current._metadata.version, 10)
+          const latestVersion = latest?._metadata?.version
+            ? parseInt(latest._metadata.version, 10)
+            : -1
 
-    if (experience) {
+          return currentVersion > latestVersion ? current : latest
+        },
+        null
+      )
+
+    if (latestExperience) {
       return (
-        <Suspense>
-          <VisualBuilderExperienceWrapper experience={experience} />
+        <Suspense fallback={<div>Loading experience preview…</div>}>
+          <VisualBuilderExperienceWrapper experience={latestExperience} />
         </Suspense>
       )
     }
@@ -66,19 +70,28 @@ export default async function DraftModeCmsPage({
     return notFound()
   }
 
-  // Otherwise, pick latest CMS page version
-  const maxCmsPageVersion = Math.max(
-    ...cmsPageItems.map((item) => parseInt(item?._metadata?.version || '0', 10))
-  )
+  // Otherwise, select the latest CMS page version
+  const latestCmsPage = cmsPageItems.reduce<
+    (typeof cmsPageItems)[number] | null
+  >((latest, current) => {
+    if (!current || !current._metadata?.version) return latest
 
-  const page = cmsPageItems.find(
-    (p) => parseInt(p?._metadata?.version || '0', 10) === maxCmsPageVersion
-  )
+    const currentVersion = parseInt(current._metadata.version, 10)
+    const latestVersion = latest?._metadata?.version
+      ? parseInt(latest._metadata.version, 10)
+      : -1
 
-  const blocks = (page?.blocks ?? []).filter(Boolean)
+    return currentVersion > latestVersion ? current : latest
+  }, null)
+
+  if (!latestCmsPage) {
+    return notFound()
+  }
+
+  const blocks = (latestCmsPage.blocks ?? []).filter(Boolean)
 
   return (
-    <Suspense>
+    <Suspense fallback={<div>Loading CMS preview…</div>}>
       <ContentAreaMapper blocks={blocks} />
     </Suspense>
   )

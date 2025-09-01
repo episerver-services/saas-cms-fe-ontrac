@@ -1,15 +1,21 @@
-import { Locales } from '../sdk'
+// 🔁 Local fallback for `Locales` enum (matches expected values)
+export const Locales = {
+  En: 'en',
+  // Extend here if needed: Fr: 'fr', De: 'de', etc.
+} as const
+
+export type Locales = (typeof Locales)[keyof typeof Locales]
 
 /**
  * The default locale to fall back to when an invalid locale is encountered.
  */
-export const DEFAULT_LOCALE: Locales = 'en'
+export const DEFAULT_LOCALE: Locales = Locales.En
 
 /**
  * List of supported locales for the site.
  * Extend this array as needed to support additional languages.
  */
-export const LOCALES: Locales[] = ['en']
+export const LOCALES: Locales[] = [Locales.En]
 
 /**
  * Validates a provided locale string against the list of supported locales.

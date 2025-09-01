@@ -28,14 +28,14 @@ export default async function DraftModeCmsPage({
     { preview: true }
   )
 
-  const cmsPageItems = CMSPage?.items?.filter(Boolean)
+  const cmsPageItems = CMSPage?.item ? [CMSPage.item] : []
 
   // If no CMS pages found, attempt to load a Visual Builder Experience
   if (!cmsPageItems?.length) {
     console.info('No CMS draft found, attempting to load VB experience.')
 
     const { SEOExperience } =
-      await optimizely.GetAllVisualBuilderVesrionsBySlug(
+      await optimizely.GetAllVisualBuilderVersionsBySlug(
         { locales: [validLocale], slug },
         { preview: true }
       )
@@ -70,16 +70,21 @@ export default async function DraftModeCmsPage({
     return notFound()
   }
 
-  // Otherwise, select the latest CMS page version
-  const latestCmsPage = cmsPageItems.reduce<
-    (typeof cmsPageItems)[number] | null
-  >((latest, current) => {
+  /**
+   * Selects the latest version of a CMS page from the available items.
+   * Falls back to null if no valid version is found.
+   */
+  const latestCmsPage = cmsPageItems.reduce<{
+    blocks?: { __typename: string; [key: string]: unknown }[]
+    _metadata?: {
+      version?: string
+      [key: string]: unknown
+    }
+  } | null>((latest, current) => {
     if (!current || !current._metadata?.version) return latest
 
-    const currentVersion = parseInt(current._metadata.version, 10)
-    const latestVersion = latest?._metadata?.version
-      ? parseInt(latest._metadata.version, 10)
-      : -1
+    const currentVersion = parseInt(`${current._metadata.version}`, 10)
+    const latestVersion = parseInt(`${latest?._metadata?.version ?? -1}`, 10)
 
     return currentVersion > latestVersion ? current : latest
   }, null)

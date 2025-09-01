@@ -2,7 +2,7 @@
 
 This document outlines the architectural design of the custom front-end built for Optimizely SaaS CMS. It explains how content flows from the CMS through the GraphQL layer into page rendering and how the app supports features like preview mode, Visual Builder readiness, and static revalidation.
 
-_Last updated: 29 July 2025_
+_Last updated: 01 September 2025_
 
 ---
 
@@ -22,9 +22,9 @@ _Last updated: 29 July 2025_
 ## 📦 Data Flow
 
 1. **Request hits** `[locale]/[slug]/page.tsx`
-2. **Content fetch:** Uses SDK methods wrapping GraphQL calls
-   - Tries `CMSPage` first
-   - Fallbacks to `SEOExperience` (VB)
+2. **Content fetch:** Uses temporary SDK methods wrapping mock GraphQL calls
+   - Tries `CMSPage` first via `GetAllPagesVersionByURL`
+   - Fallbacks to `SEOExperience` (Visual Builder)
 3. **Draft mode check:** Uses `draftMode().enable()` to show unpublished content
 4. **Component rendering:** Uses `ContentAreaMapper` with `__typename`-driven factory
 5. **Slot recursion:** Nested slots rendered via recursive helper
@@ -36,8 +36,8 @@ _Last updated: 29 July 2025_
 ### Delivery API
 
 - GraphQL endpoint accessed via `.env` bearer token
-- SDK generated using GraphQL Codegen (`pnpm codegen`)
-- Type-safe query results via `lib/optimizely/sdk.ts`
+- SDK is stubbed for now; future integration will use GraphQL Codegen (`pnpm codegen`)
+- Live schema fragments and query generation to follow
 
 ### Content Types
 
@@ -60,15 +60,15 @@ _Last updated: 29 July 2025_
 - **SafeVisualBuilderExperience** type guards composition shape
 - `VisualBuilderExperienceWrapper` handles rendering in draft mode
 - `displaySettings`, `component`, and `slots` mapped dynamically
-- Layout-aware logic still evolving
+- Layout-aware rendering logic partially implemented; awaits live CMS schema and fragments
 
 ---
 
 ## 🛠️ Static Rendering & Revalidation
 
-- Uses `generateStaticParams()` to pre-build known routes
-- Revalidates via `/api/revalidate` when content is published
-- Can toggle `IS_BUILD` env to force fallback-only during Docker builds
+- Static generation (`generateStaticParams`) temporarily disabled
+- All routes fallback to SSR due to dynamic mocks
+- `/api/revalidate` available for future CMS-triggered revalidation
 
 ---
 
@@ -77,6 +77,16 @@ _Last updated: 29 July 2025_
 - **Unit tests:** Jest + RTL for key rendering logic
 - **BDD:** Gherkin/Cucumber via `features/*.feature`
 - **E2E:** Playwright tests simulate full browser behaviour
+
+---
+
+## 📂 Current State
+
+- ✅ Mock content rendering functional via local adapters
+- ✅ Visual Builder draft rendering stub in place
+- ✅ All key routes scaffolded using App Router
+- 🔄 SDK and type-safe queries to be integrated from CMS GraphQL schema
+- 🔲 CMS block/component mapping and design system integration in progress
 
 ---
 

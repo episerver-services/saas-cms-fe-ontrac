@@ -39,14 +39,14 @@ export default async function Page({
   }
 
   const { locale, version, key } = await params
-  const locales = getValidLocale(locale)
+  const locales = [getValidLocale(locale)]
 
   const experienceData = await optimizely.VisualBuilder(
     { key, version, locales },
     { preview: true }
   )
 
-  const experience = experienceData.SEOExperience?.item as
+  const experience = experienceData.Experience?.item as
     | SafeVisualBuilderExperience
     | undefined
 

@@ -23,7 +23,7 @@ export const dynamic = 'force-dynamic'
  * @returns A React layout rendering the requested draft content, or triggers `notFound()` if invalid.
  *
  * @example
- * /en/draft/7f42.../home → fetches `"/home"` in English from draft version `7f42...`
+ * /draft/7f42.../home → fetches `"/home"` in English from draft version `7f42...`
  */
 export default async function CmsPage({
   params,
@@ -37,22 +37,24 @@ export default async function CmsPage({
 
   const { locale, slug = '', version } = await params
   const locales = getValidLocale(locale)
-  const formattedSlug = `/${slug}`
 
-  const pageResponse = await optimizely.getPreviewPageByURL(
-    { locales, slug: formattedSlug, version },
-    { preview: true }
-  )
+  // 🔁 TEMP: Use mock-only query while CMS schema is unknown
+  const pageResponse = await optimizely.GetPreviewStartPage({
+    locales: [locales],
+    version,
+  })
 
-  const blocks = (pageResponse.CMSPage?.item?.blocks ?? []).filter(Boolean)
+  const blocks = (pageResponse?.StartPage?.item?.blocks ?? []).filter(Boolean)
   if (!blocks.length) return notFound()
 
   return (
     <div className="container py-10" data-epi-edit="blocks">
-      <OnPageEdit
-        version={version}
-        currentRoute={`/${locale}/draft/${version}/${slug}`}
-      />
+      {process.env.MOCK_OPTIMIZELY !== 'true' && (
+        <OnPageEdit
+          version={version}
+          currentRoute={`/${locale}/draft/${version}/${slug}`}
+        />
+      )}
       <ContentAreaMapper blocks={blocks} preview />
     </div>
   )

@@ -1,6 +1,5 @@
-import { DocumentNode } from 'graphql'
-import { print } from 'graphql/language/printer'
-import { getSdk } from './sdk'
+import { DocumentNode, print } from 'graphql'
+import { getMockResponse } from '@/__mocks__/preview-page'
 import { isVercelError } from '../type-guards'
 
 interface OptimizelyFetchOptions {
@@ -21,11 +20,12 @@ interface GraphqlResponse<Response> {
 }
 
 /**
- * Fetches data from the Optimizely GraphQL API.
- * Handles auth, caching, preview mode, and Vercel error wrapping.
- * Skips execution if IS_BUILD=true.
+ * Fetches GraphQL data from Optimizely or returns mock data when enabled.
+ *
+ * @template Response - GraphQL response shape
+ * @template Variables - GraphQL query variables
  */
-const optimizelyFetch = async <Response, Variables = object>({
+export const optimizelyFetch = async <Response, Variables = object>({
   query,
   variables,
   headers,
@@ -35,8 +35,20 @@ const optimizelyFetch = async <Response, Variables = object>({
 }: OptimizelyFetch<Variables>): Promise<
   GraphqlResponse<Response> & { headers: Headers }
 > => {
+  const isMock = process.env.MOCK_OPTIMIZELY === 'true'
+
+  // 🧪 Return mock response (dev-only)
+  if (isMock) {
+    const data = getMockResponse<Response>(query, variables)
+    return {
+      data,
+      errors: [],
+      headers: new Headers(),
+    }
+  }
+
+  // 🏗️ Skip fetch during static builds
   if (process.env.IS_BUILD === 'true') {
-    console.warn('Skipping Optimizely fetch due to IS_BUILD=true')
     return {
       data: {} as Response,
       errors: [],
@@ -44,21 +56,31 @@ const optimizelyFetch = async <Response, Variables = object>({
     }
   }
 
-  const configHeaders = { ...headers }
-  if (preview) {
-    if (!process.env.OPTIMIZELY_PREVIEW_SECRET) {
-      throw new Error('Missing OPTIMIZELY_PREVIEW_SECRET in preview mode')
-    }
-    configHeaders.Authorization = `Basic ${process.env.OPTIMIZELY_PREVIEW_SECRET}`
-    cache = 'no-store'
-  }
-
   const apiUrl = process.env.OPTIMIZELY_API_URL
   const apiKey = process.env.OPTIMIZELY_SINGLE_KEY
 
   if (!apiUrl || !apiKey) {
-    console.error('Missing OPTIMIZELY_API_URL or OPTIMIZELY_SINGLE_KEY')
-    throw new Error('Optimizely API configuration is incomplete')
+    throw new Error('Missing OPTIMIZELY_API_URL or OPTIMIZELY_SINGLE_KEY')
+  }
+
+  const configHeaders = { ...headers }
+
+  if (preview) {
+    const previewSecret = process.env.OPTIMIZELY_PREVIEW_SECRET
+    if (!previewSecret) {
+      if (process.env.NODE_ENV === 'development') {
+        const data = getMockResponse<Response>(query, variables)
+        return {
+          data,
+          errors: [],
+          headers: new Headers(),
+        }
+      } else {
+        throw new Error('Missing OPTIMIZELY_PREVIEW_SECRET in preview mode')
+      }
+    }
+    configHeaders.Authorization = `Basic ${previewSecret}`
+    cache = 'no-store'
   }
 
   const endpoint = `${apiUrl}?auth=${apiKey}`
@@ -81,42 +103,262 @@ const optimizelyFetch = async <Response, Variables = object>({
     })
 
     const result = await response.json()
-
-    return {
-      ...result,
-      headers: response.headers,
+    return { ...result, headers: response.headers }
+  } catch (error) {
+    if (isVercelError(error)) {
+      throw { status: error.status || 500, message: error.message, query }
     }
-  } catch (e) {
-    if (isVercelError(e)) {
-      throw {
-        status: e.status || 500,
-        message: e.message,
-        query,
-      }
-    }
-
-    throw {
-      error: e,
-      query,
-    }
+    throw { error, query }
   }
 }
 
 /**
- * GraphQL requester used by the generated SDK.
+ * Lightweight GraphQL SDK-style requester.
+ * Converts AST into string (for real fetch) or uses as-is in mock mode.
  */
 const requester = async <T, V>(
-  doc: DocumentNode,
+  query: DocumentNode | string,
   variables: V,
   options?: OptimizelyFetchOptions
 ): Promise<T> => {
-  const response = await optimizelyFetch<T, V>({
-    query: print(doc),
-    variables,
-    ...options,
-  })
+  const isMock = process.env.MOCK_OPTIMIZELY === 'true'
 
-  return response.data
+  return (
+    await optimizelyFetch<T, V>({
+      query: isMock ? String(query) : print(query as DocumentNode),
+      variables,
+      ...options,
+    })
+  ).data
 }
 
-export const optimizely = getSdk(requester)
+// ─────────────────────────────────────
+// 🔌 Local SDK (stubbed queries only)
+// ─────────────────────────────────────
+
+/**
+ * Local mock-only Optimizely SDK.
+ * Replace or extend these queries manually until GraphQL Codegen is restored.
+ */
+export const optimizely = {
+  /**
+   * Retrieves the StartPage content in preview mode.
+   */
+  async GetPreviewStartPage(variables: { locales: string[]; version: string }) {
+    return requester<
+      {
+        StartPage: {
+          item: {
+            blocks?: {
+              __typename: string
+              [key: string]: unknown
+            }[]
+          }
+        }
+      },
+      typeof variables
+    >('query GetPreviewStartPage { ... }', variables, {
+      preview: true,
+    })
+  },
+
+  /**
+   * Retrieves a single CMS block component by key (Visual Builder preview).
+   */
+  async GetComponentByKey(
+    variables: { locales: string[]; key: string; version: string },
+    options?: { preview?: boolean }
+  ) {
+    return requester<
+      {
+        _Component: {
+          item: {
+            __typename: string
+            [key: string]: unknown
+          }
+        }
+      },
+      typeof variables
+    >('query GetComponentByKey { ... }', variables, options)
+  },
+
+  /**
+   * Retrieves a full-page Experience layout by key (Visual Builder).
+   */
+  async VisualBuilder(
+    variables: { key: string; version: string; locales: string[] },
+    options?: { preview?: boolean }
+  ) {
+    return requester<
+      {
+        Experience: {
+          item: {
+            __typename: string
+            composition: {
+              displayName: string
+              nodes: {
+                displaySettings: Record<string, unknown>
+                component: {
+                  __typename: string
+                  [key: string]: unknown
+                }
+                key: string
+              }[]
+            }
+          }
+        }
+      },
+      typeof variables
+    >('query VisualBuilder { ... }', variables, options)
+  },
+
+  /**
+   * Stub for fetching CMS pages by URL slug (mock-only).
+   */
+  async getPageByURL(
+    variables: { locales: string[]; slug: string },
+    options?: { preview?: boolean }
+  ) {
+    console.warn(
+      '[MOCK_OPTIMIZELY] getPageByURL() stub used with:',
+      variables,
+      options
+    )
+    return {
+      CMSPage: { item: null },
+    }
+  },
+
+  /**
+   * Retrieves all CMS pages for static param generation (e.g. ISR).
+   */
+  async AllPages(variables: { pageType: string[] }) {
+    return requester<
+      {
+        _Content: {
+          items: {
+            _metadata?: {
+              url?: {
+                default?: string
+              }
+            }
+          }[]
+        }
+      },
+      typeof variables
+    >('query AllPages { ... }', variables)
+  },
+
+  /**
+   * Retrieves content by GUID (used in revalidate route).
+   */
+  async GetContentByGuid(variables: { guid: string }) {
+    return requester<
+      {
+        _Content: {
+          items: {
+            __typename: string
+            _metadata?: {
+              guid: string
+              [key: string]: unknown
+            }
+            [key: string]: unknown
+          }[]
+        }
+      },
+      typeof variables
+    >('query GetContentByGuid { ... }', variables)
+  },
+
+  /**
+   * Retrieves CMSPage by slug and version (used in Visual Builder preview fallback).
+   */
+  async GetAllPagesVersionByURL(
+    variables: { locales: string[]; slug: string },
+    options?: { preview?: boolean }
+  ) {
+    return requester<
+      {
+        CMSPage: {
+          item: {
+            __typename: string
+            title: string
+            shortDescription?: string
+            keywords?: string
+            blocks?: {
+              __typename: string
+              [key: string]: unknown
+            }[]
+            _metadata?: {
+              modified: string
+              [key: string]: unknown
+            }
+            [key: string]: unknown
+          } | null
+        }
+      },
+      typeof variables
+    >('query GetAllPagesVersionByURL { ... }', variables, options)
+  },
+
+  /**
+   * Retrieves all versions of a Visual Builder Experience by slug.
+   */
+  async GetAllVisualBuilderVersionsBySlug(
+    variables: { locales: string[]; slug: string },
+    options?: { preview?: boolean }
+  ) {
+    return requester<
+      {
+        SEOExperience: {
+          items: {
+            __typename: string
+            _metadata?: {
+              version?: string
+              [key: string]: unknown
+            }
+            composition: {
+              displayName: string
+              nodes: {
+                displaySettings: Record<string, unknown>
+                component: {
+                  __typename: string
+                  [key: string]: unknown
+                }
+                key: string
+              }[]
+            }
+          }[]
+        }
+      },
+      typeof variables
+    >('query GetAllVisualBuilderVersionsBySlug { ... }', variables, options)
+  },
+
+  /**
+   * Retrieves all versions of the StartPage content (used in preview mode).
+   */
+  async GetAllStartPageVersions(
+    variables: { locales: string[] },
+    options?: { preview?: boolean }
+  ) {
+    return requester<
+      {
+        StartPage: {
+          items: {
+            blocks?: {
+              __typename: string
+              [key: string]: unknown
+            }[]
+            _metadata?: {
+              version?: string
+              [key: string]: unknown
+            }
+            [key: string]: unknown
+          }[]
+        }
+      },
+      typeof variables
+    >('query GetAllStartPageVersions { ... }', variables, options)
+  },
+}

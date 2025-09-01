@@ -7,7 +7,7 @@ This file tracks the current implementation progress of the custom frontend temp
 🔲 = Not Started
 ❌ = Not in current scope
 
-_Last updated: 30 July 2025_
+_Last updated: 01 September 2025_
 
 ---
 
@@ -81,17 +81,15 @@ _Last updated: 30 July 2025_
 
 ---
 
-## 🧱 Phase 7: Visual Builder (Optional – Scoped Out for OnTrac)
+## 🧱 Phase 7: Visual Builder
 
-| Task                                 | Status | Notes                                                       |
-| ------------------------------------ | ------ | ----------------------------------------------------------- |
-| Visual Builder support planned       | 🔲     | No current requirement; VB support removed for OnTrac scope |
-| Experience content query (GraphQL)   | ❌     | `_Experience` not used; removed to simplify integration     |
-| Visual block component compatibility | ❌     | Not implemented — only core static blocks remain            |
-| Layout awareness and slot mapping    | ❌     | Removed pending future VB re-scoping                        |
-| Safe guards for Experience types     | 🔄     | Partial shape guards left in for future re-integration      |
-
----
+| Task                                 | Status | Notes                                                                |
+| ------------------------------------ | ------ | -------------------------------------------------------------------- |
+| Visual Builder support planned       | ✅     | VB now in scope — core infrastructure and preview mode supported     |
+| Experience content query (GraphQL)   | ✅     | `_Experience` and preview mode supported via VisualBuilder route     |
+| Visual block component compatibility | 🔄     | Component mapping in progress; partial support for dynamic rendering |
+| Layout awareness and slot mapping    | 🔄     | Layout-aware rendering started; slot renderer partially implemented  |
+| Safe guards for Experience types     | ✅     | `SafeVisualBuilderExperience` types and guards fully implemented     |
 
 ## 📁 Phase 8: Docs & Developer Experience
 

@@ -1,5 +1,5 @@
 import { optimizely } from '../optimizely/fetch'
-import type { _IContent as IContent } from '../optimizely/sdk'
+import type { SafeContent as IContent } from '../optimizely/types/type-utils'
 
 /**
  * Resolves any shared or inline blocks within a CMS page.
@@ -28,10 +28,14 @@ export async function resolveInlineBlocks(
   }
 
   if (unresolvedKeys.length > 0) {
-    const result = await optimizely.GetContentByGuid({ guid: unresolvedKeys })
-    const fetched = result._Content?.items ?? []
+    for (const key of unresolvedKeys) {
+      const result = await optimizely.GetContentByGuid({ guid: key })
+      const fetched = result._Content?.items?.[0]
 
-    resolved.push(...(fetched as unknown as IContent[]))
+      if (fetched) {
+        resolved.push(fetched as unknown as IContent)
+      }
+    }
   }
 
   return resolved

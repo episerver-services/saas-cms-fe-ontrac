@@ -2,31 +2,44 @@ import dynamic from 'next/dynamic'
 import blocksMapperFactory from '@/lib/utils/block-factory'
 
 /**
- * Lazy-load fallback block for unknown or unmapped CMS block types.
- * Used to render a safe placeholder when a component isn't defined in the block map.
+ * Dynamically import the fallback component used when a CMS block type
+ * is missing or not yet mapped. This ensures the page renders without crashing.
  */
 const PlaceholderBlock = dynamic(() => import('./placeholder-block'))
 
 /**
- * A map of CMS block `__typename` values to their corresponding React components.
+ * Dynamically import each known CMS block used by the application.
  *
- * Extend this map with new block components as needed:
+ * Block filenames should match their `__typename` from the CMS exactly
+ * (e.g. `HeroBlock` maps to `hero-block.tsx`).
  *
- * Example:
- * ```ts
+ * Use `dynamic()` to enable lazy loading and improve performance.
+ */
+const HeroBlock = dynamic(() => import('../ui/hero-block')) // ✅ Add more as needed
+
+/**
+ * A mapping of CMS block `__typename` values to their corresponding React components.
+ *
+ * Extend this map to support additional blocks as they're defined in the CMS schema.
+ * Unrecognized blocks will default to `UnknownBlock`, which renders a fallback UI.
+ *
+ * @example
  * export const blocks = {
  *   HeroBlock: dynamic(() => import('./hero-block')),
  *   ImageBlock: dynamic(() => import('./image-block')),
- *   UnknownBlock: PlaceholderBlock, // fallback
+ *   UnknownBlock: PlaceholderBlock,
  * }
- * ```
  */
 export const blocks = {
+  HeroBlock,
   UnknownBlock: PlaceholderBlock,
 }
 
 /**
- * Exports a block mapper function that returns the appropriate component
- * based on the given `__typename`. Falls back to `UnknownBlock` if no match.
+ * Returns a function that maps a `__typename` from the CMS
+ * to the correct React component.
+ *
+ * This factory handles fallback logic and is used by `ContentAreaMapper`
+ * to render individual blocks safely, even if unmapped.
  */
 export default blocksMapperFactory(blocks)

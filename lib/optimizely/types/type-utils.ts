@@ -1,4 +1,8 @@
-import type { _IContent } from '../sdk'
+// Fallback version of _IContent (used in place of the removed GraphQL SDK types)
+export interface _IContent {
+  __typename?: string
+  [key: string]: unknown
+}
 
 /**
  * A version of _IContent that always includes an optional __typename.

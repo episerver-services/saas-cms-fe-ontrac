@@ -36,7 +36,7 @@ export default async function Page({
   }
 
   const { locale, version, key } = await params
-  const locales = getValidLocale(locale)
+  const locales = [getValidLocale(locale)]
 
   const response = await optimizely.GetComponentByKey(
     { locales, key, version },

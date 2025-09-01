@@ -29,9 +29,26 @@ function hasModifiedMetadata(
   )
 }
 
+// Define expected CMSPage item shape
+type CMSPageItem = {
+  title: string
+  shortDescription?: string
+  keywords?: string
+  blocks?: {
+    __typename: string
+    [key: string]: unknown
+  }[]
+  _metadata?: {
+    modified?: string
+    [key: string]: unknown
+  }
+}
+
 /**
  * Generates SEO metadata for a given CMS page based on the locale and slug.
  * Falls back to static defaults or minimal metadata when previewing or in error states.
+ *
+ * Returns fallback if MOCK_OPTIMIZELY or IS_BUILD is enabled.
  *
  * @param props - Object containing the locale and slug from dynamic route params.
  * @returns Metadata used in the <head> of the rendered page.
@@ -42,7 +59,13 @@ export async function generateMetadata(props: {
   const { locale, slug } = await props.params
   const { localeCode, formattedSlug } = resolveSlugAndLocale(locale, slug)
 
-  if (process.env.IS_BUILD === 'true') {
+  if (
+    process.env.IS_BUILD === 'true' ||
+    process.env.MOCK_OPTIMIZELY === 'true'
+  ) {
+    console.warn(
+      '[generateMetadata] Using fallback due to IS_BUILD or MOCK_OPTIMIZELY'
+    )
     return {
       title: 'Optimizely Page',
       description: '',
@@ -62,10 +85,16 @@ export async function generateMetadata(props: {
       }
     )
 
-    const page = pageData?.CMSPage?.item
-    if (!page) {
-      return {}
+    const item = pageData?.CMSPage?.item
+
+    if (!item || typeof item !== 'object' || !('title' in item)) {
+      console.warn('[generateMetadata] No valid CMSPage item found')
+      return {
+        title: `Optimizely Page${slug ? ` - ${slug.join('/')}` : ''}`,
+      }
     }
+
+    const page = item as CMSPageItem
 
     return {
       title: page.title,
@@ -83,19 +112,27 @@ export async function generateMetadata(props: {
 
 /**
  * Generates all static paths (slug arrays) for ISR or static export.
- * Skips path generation if running inside a Docker container build.
+ * Skips path generation if running inside a Docker container build
+ * or when mock mode is active.
  *
  * @returns An array of objects containing `slug` arrays for prerendering.
  */
 export async function generateStaticParams() {
-  if (process.env.IS_BUILD === 'true') {
+  if (
+    process.env.IS_BUILD === 'true' ||
+    process.env.MOCK_OPTIMIZELY === 'true'
+  ) {
+    console.warn(
+      '[generateStaticParams] Skipped due to IS_BUILD or MOCK_OPTIMIZELY'
+    )
     return []
   }
 
   try {
     const pageTypes = ['CMSPage']
-    const pathsResp = await optimizely.AllPages({ pageType: pageTypes })
-    const paths = pathsResp._Content?.items ?? []
+    const pathsResp = await optimizely.AllPages?.({ pageType: pageTypes })
+
+    const paths = pathsResp?._Content?.items ?? []
 
     const uniquePaths = new Set<string>()
     paths.forEach((path) => {
@@ -142,7 +179,7 @@ export default async function CmsPage(props: {
     )
   }
 
-  let page = null
+  let page: CMSPageItem | null = null
   try {
     const pageData = await optimizely.getPageByURL(
       {
@@ -150,12 +187,24 @@ export default async function CmsPage(props: {
         slug: formattedSlug,
       },
       {
-        preview: isDraftModeEnabled,
+        preview: false,
       }
     )
-    page = pageData?.CMSPage?.item ?? null
+
+    const item = pageData?.CMSPage?.item
+
+    if (item && typeof item === 'object') {
+      page = item as CMSPageItem
+    }
   } catch (err) {
-    return <FallbackErrorUI error={err} />
+    return (
+      <FallbackErrorUI
+        title="Failed to load content"
+        message="An error occurred while retrieving this page from the CMS."
+        showHomeLink
+        error={err}
+      />
+    )
   }
 
   if (!page || !hasModifiedMetadata(page)) {
@@ -165,7 +214,7 @@ export default async function CmsPage(props: {
   const blocks = (page.blocks ?? []).filter(Boolean)
 
   return (
-    <Suspense fallback={<div>Loading content...</div>}>
+    <Suspense fallback={<div>Loading page content...</div>}>
       <ContentAreaMapper blocks={blocks} />
     </Suspense>
   )

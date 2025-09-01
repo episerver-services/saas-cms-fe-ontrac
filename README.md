@@ -1,7 +1,8 @@
-# OnTrac – SaaS CMS Production Frontend
+# OnTrac – SaaS CMS Frontend (Optimizely Head)
 
-This is the production-ready **Next.js 15** front-end for **OnTrac**, powered by the **Optimizely SaaS CMS Delivery API**.  
-It integrates layout-aware GraphQL content rendering with a clean architecture optimised for performance, testing, and scalability.
+This is the production-grade **Next.js 15** frontend for **OnTrac**, powered by the **Optimizely SaaS CMS GraphQL Delivery API (v2)**.
+
+It implements layout-aware rendering from CMS content, supports preview mode, and is structured for performance, testability, and developer handoff.
 
 The current production site is live at: https://www.ontrac.com/  
 _Note: This repo powers the future rebuild, which is still under active development._
@@ -10,19 +11,16 @@ _Note: This repo powers the future rebuild, which is still under active developm
 
 ## 🧩 Features
 
-• ✅ GraphQL client + codegen setup (ready for CMS integration)
-• 🔧 Environment-based layout + homepage config  
-• 🐳 Docker-optimised CI/CD and deploy flow  
-• 🧪 Unit tests with Jest + React Testing Library  
+• ✅ GraphQL client + codegen setup using Optimizely schema  
+• ✅ Layout-aware CMS rendering (blocks, pages, homepage, VB)  
+• ✅ Draft mode support for unpublished content  
+• ✅ Component mocking for Storybook-first development  
+• 🧪 Unit testing with Jest + React Testing Library  
 • 🧪 E2E browser testing via Playwright  
 • 🧪 BDD testing via Cucumber + Gherkin  
-• 📐 `codegen.ts` configured for future schema + fragment generation  
-• 📄 SEO metadata generation from CMS  
-• 👓 Draft mode and preview route handling  
-• 📂 Clear folder structure for blocks and layouts  
-• 🎨 Storybook integration for component development
-• 🚧 Component mapping and CMS integration in progress  
-• 📦 Placeholder mocks and stub components included for handoff
+• 🐳 Docker-ready production build and preview flows  
+• 🎨 Clear folder structure for CMS blocks, layouts, and routes  
+• 🚧 CMS component mapping and visual styles in progress
 
 ---
 
@@ -38,34 +36,23 @@ pnpm install
 
 ### 2. Configure Environment
 
-Create `.env.local` with your Delivery API token and layout content:
+Create `.env.local`:
 
 ```env
-# ┌────────────────────────────────────────────┐
-# │ Optimizely GraphQL API Configuration       │
-# └────────────────────────────────────────────┘
-
 OPTIMIZELY_API_URL="https://cg.optimizely.com/content/v2"
 OPTIMIZELY_SINGLE_KEY=your_single_delivery_key_here
-
-# Combine App Key and Secret and Base64 encode:
-# echo -n 'your-app-key:your-app-secret' | base64
 OPTIMIZELY_PREVIEW_SECRET=your_base64_encoded_preview_secret
-
-# Optional revalidation secret for ISR
 OPTIMIZELY_REVALIDATE_SECRET=
-
-# This should match your CMS instance domain
 NEXT_PUBLIC_CMS_URL=your-cms-instance-domain.cms.optimizely.com
 ```
 
-### 3. Start Development
+### 3. Run the Dev Server
 
 ```bash
 pnpm dev
 ```
 
-Visit [http://localhost:3000](http://localhost:3000)
+If `.env.local` is missing, the app will fall back to mock GraphQL responses via MSW.
 
 ---
 
@@ -103,11 +90,6 @@ Run **Playwright E2E** tests:
 pnpm test:playwright
 ```
 
-Test files live in:
-
-- `app/components/__tests__/`
-- `e2e/`
-
 ---
 
 ## 📚 Storybook
@@ -116,34 +98,18 @@ Test files live in:
 pnpm storybook
 ```
 
-Visual UI component development via [Storybook](https://storybook.js.org). Add stories to `.storybook/`.
-
 ---
 
 ## 🗂️ Project Structure
 
 ```
 📁 app/
-│ ├─ (site)/[locale]/[slug]/      # Dynamic CMS page route
-│ ├─ components/                  # Blocks, layout, draft mode, etc.
-│ ├─ __tests__/                   # Unit tests
-│ ├─ (draft)/                     # Preview handler
-│ ├─ api/
-│ ├─ globals.css
-│ └─ metadata.ts
-
 📁 lib/
-│ ├─ optimizely/                  # SDK, queries, utils
-│ ├─ utils/
-│ └─ content/
-
-📁 features/                      # BDD tests (Cucumber)
-📁 e2e/                           # E2E tests (Playwright)
-📁 mocks/                         # Mock data for testing components before CMS is live
+📁 features/
+📁 e2e/
+📁 mocks/
 📁 public/
 📁 .storybook/
-📁 .github/
-
 📄 codegen.ts
 📄 Dockerfile
 📄 docker-compose.yml
@@ -170,37 +136,17 @@ Visual UI component development via [Storybook](https://storybook.js.org). Add s
 
 ## 🛠️ Docker Support
 
-Build the production image:
-
 ```bash
 docker build -t saas-cms-fe-ontrac .
-```
-
-Run it locally:
-
-```bash
 docker run -p 3000:3000 --env-file .env.local saas-cms-fe-ontrac
 ```
-
-👉 **Tip:** Pass secrets like `OPTIMIZELY_BEARER_TOKEN` via `--env-file` or secret manager — never hardcode in Dockerfile.
 
 ---
 
 ## ⚠️ Handoff Notes
 
-The current implementation includes:
-
-✅ All architectural scaffolding for a production-grade head  
-✅ GraphQL client and codegen setup (no schema integrated yet)  
-✅ Routing, layout, draft mode, and metadata support  
-✅ Placeholder blocks and mock data for Storybook development
-
-The following is expected to be completed by the next team:
-
-❌ CMS schema integration and GraphQL fragment generation  
-❌ Component development and mapping to CMS content types  
-❌ Styling and brand theming  
-❌ Visual Builder layout rendering  
-❌ Personalization, experiments, and DAM asset support
-
-See `/docs/project-status.md` for a detailed task tracker.
+✅ Layout-aware routing and block rendering  
+✅ CMS integration using GraphQL schema and SDK  
+✅ Visual Builder fallback support (via experience wrappers)  
+✅ Draft mode for unpublished pages and blocks  
+✅ Mock-driven development support via Storybook

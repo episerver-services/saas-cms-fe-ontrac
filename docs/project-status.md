@@ -7,7 +7,7 @@ This file tracks the current implementation progress of the custom frontend temp
 🔲 = Not Started  
 ❌ = Not in current scope
 
-_Last updated: 01 September 2025_
+_Last updated: 02 September 2025_
 
 ---
 
@@ -46,7 +46,7 @@ _Last updated: 01 September 2025_
 | Component factory mapper             | ✅     | Draft/published page rendering active with Suspense + error fallback  |
 | Slot renderer for named areas        | ✅     | Block-to-component mapping via `ContentAreaMapper`                    |
 | ID resolution (inline/shared blocks) | 🔲     | No Visual Builder or GraphQL runtime guards present                   |
-| Rich text and media component base   | 🔲     | CMS-driven block components removed; only static placeholders remain  |
+| Rich text and media component base   | 🔄     | Placeholder and Storybook setup added; CMS-driven components missing  |
 
 ---
 
@@ -65,10 +65,10 @@ _Last updated: 01 September 2025_
 
 | Task                       | Status | Notes                                                               |
 | -------------------------- | ------ | ------------------------------------------------------------------- |
-| Metadata from CMS          | 🔲     | CMS metadata integration removed; future layout-aware SEO TBD       |
+| Metadata from CMS          | 🔄     | Metadata scaffolding present; CMS integration pending               |
 | Accessibility baseline     | 🔄     | Placeholder structure OK; skip links in place; no WCAG audit yet    |
 | Skip links, ARIA audit     | ✅     | Skip link implemented in `layout.tsx`; other checks not yet applied |
-| robots.txt / sitemap setup | ❌     | No sitemap or robots.txt routes in current codebase                 |
+| robots.txt / sitemap setup | ✅     | Sitemap and `robots.txt` routes added; static only for now          |
 
 ---
 

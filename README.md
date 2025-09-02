@@ -44,30 +44,56 @@ OPTIMIZELY_SINGLE_KEY=your_single_delivery_key_here
 OPTIMIZELY_PREVIEW_SECRET=your_base64_encoded_preview_secret
 OPTIMIZELY_REVALIDATE_SECRET=
 NEXT_PUBLIC_CMS_URL=your-cms-instance-domain.cms.optimizely.com
+
+# Enable mocks for local preview without a live CMS
+MOCK_OPTIMIZELY=true
+NEXT_PUBLIC_MOCK_OPTIMIZELY=true
 ```
+
+### 3. Run the Dev Server
+
+```bash
+pnpm dev
+```
+
+If `.env.local` is missing, the app will fall back to mock GraphQL responses via MSW.
 
 ---
 
-### 🧪 Mock Preview Mode (Local Testing)
+## 🔐 Cookie Consent (To Be Configured)
 
-To test Visual Builder preview routes without connecting to a live Optimizely CMS, enable mock mode:
+The frontend is **ready for a plug-and-play GDPR cookie consent manager** (e.g., Cookiebot, Osano, CookieYes), but no account has been configured yet.
 
-1. **In your `.env.local`:**
+**Recommendations:**
 
-   ```env
-   MOCK_OPTIMIZELY=true
-   NEXT_PUBLIC_MOCK_OPTIMIZELY=true
-   ```
+- Use a managed CMP like [Cookiebot](https://www.cookiebot.com) for fast, low-effort integration.
+- Add the provided script tag in `app/layout.tsx` (see below).
+- Set `NEXT_PUBLIC_COOKIEBOT_ID` in `.env.local`.
 
-2. **Access this test route in your browser:**
+**Example (in `app/layout.tsx`):**
 
-   ```
-   http://localhost:3000/draft/1234/my-test-slug
-   ```
+```tsx
+{
+  process.env.NEXT_PUBLIC_COOKIEBOT_ID && (
+    <script
+      id="Cookiebot"
+      src="https://consent.cookiebot.com/uc.js"
+      data-cbid={process.env.NEXT_PUBLIC_COOKIEBOT_ID}
+      data-blockingmode="auto"
+      type="text/javascript"
+      async
+    ></script>
+  )
+}
+```
 
-   You should see a mocked "hero block" or other placeholder content. This allows full testing of the preview rendering logic, draft mode, and layout without requiring CMS content or credentials.
+**.env.local:**
 
-> ⚠️ Don't forget to **disable mock mode** (`MOCK_OPTIMIZELY=false`) when connecting to real CMS data.
+```
+NEXT_PUBLIC_COOKIEBOT_ID=your_cookiebot_id_here
+```
+
+✅ Ready to enable once the client chooses a consent platform and provides an ID.
 
 ---
 

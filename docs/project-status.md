@@ -4,7 +4,7 @@ This file tracks the current implementation progress of the custom frontend temp
 
 ✅ = Complete  
 🔄 = In Progress  
-🔲 = Not Started
+🔲 = Not Started  
 ❌ = Not in current scope
 
 _Last updated: 01 September 2025_
@@ -17,6 +17,7 @@ _Last updated: 01 September 2025_
 | ------------------------------------ | ------ | -------------------------------------------------- |
 | **Project scaffold & folder layout** | ✅     | App Router, `/app`, `/lib`, etc. all in place      |
 | **Environment config (.env setup)**  | 🔄     | `.env.local` expected by codegen + Docker          |
+| **.env.example** template            | ✅     | Sample env file included with all variables        |
 | **TypeScript + ESLint config**       | ✅     | `tsconfig.json`, `eslint.config.ts` are valid      |
 | **GitHub CI/CD pipelines**           | ✅     | `ci-cd.yaml` handles lint, build, test via Actions |
 | **Commit linting / Husky hooks**     | ✅     | `.husky/pre-commit` present with `lint-staged`     |
@@ -31,6 +32,7 @@ _Last updated: 01 September 2025_
 | SDK setup with graphql-codegen     | 🔲     | graphql-codegen removed; no generated SDK in use            |
 | Content ID config (home, layout)   | 🔲     | CMS-driven layout/homepage config removed                   |
 | Preview mode support (draft route) | 🔲     | Draft mode routes and API removed; not active in this build |
+| Mock preview route (`/draft/...`)  | ✅     | Supports local dev without CMS connection                   |
 | Fallback & error handling          | ✅     | `not-found.tsx` still handles unresolved routes cleanly     |
 
 ---
@@ -60,13 +62,14 @@ _Last updated: 01 September 2025_
 
 ## 🛡️ Phase 5: Accessibility, SEO & Metadata
 
-| Task                       | Status | Notes                                                               |
-| -------------------------- | ------ | ------------------------------------------------------------------- |
-| Metadata from CMS          | 🔲     | CMS metadata integration removed; future layout-aware SEO TBD       |
-| Accessibility baseline     | 🔄     | Placeholder structure OK; no ARIA or WCAG validation yet            |
-| Skip links, ARIA audit     | ✅     | Skip link implemented in `layout.tsx`; other checks not yet applied |
-| robots.txt / sitemap setup | ❌     | No sitemap or robots.txt routes in current codebase                 |
-| Core Web Vitals reporting  | 🔲     | `VitalsInit` placeholder exists; actual CWV logging logic removed   |
+| Task                             | Status | Notes                                                               |
+| -------------------------------- | ------ | ------------------------------------------------------------------- |
+| Metadata from CMS                | 🔲     | CMS metadata integration removed; future layout-aware SEO TBD       |
+| Accessibility baseline           | 🔄     | Placeholder structure OK; no ARIA or WCAG validation yet            |
+| Skip links, ARIA audit           | ✅     | Skip link implemented in `layout.tsx`; other checks not yet applied |
+| robots.txt / sitemap setup       | ❌     | No sitemap or robots.txt routes in current codebase                 |
+| Core Web Vitals setup (LCP, INP) | 🔲     | Logging not implemented; `VitalsInit` present                       |
+| Real-user monitoring / analytics | ❌     | No GA/Sentry/LogRocket/etc configured                               |
 
 ---
 
@@ -91,6 +94,8 @@ _Last updated: 01 September 2025_
 | Layout awareness and slot mapping    | 🔄     | Layout-aware rendering started; slot renderer partially implemented  |
 | Safe guards for Experience types     | ✅     | `SafeVisualBuilderExperience` types and guards fully implemented     |
 
+---
+
 ## 📁 Phase 8: Docs & Developer Experience
 
 | Task                    | Status | Notes                                              |
@@ -99,3 +104,12 @@ _Last updated: 01 September 2025_
 | Code comments + JSDoc   | ✅     | Function-level JSDoc added throughout key files    |
 | Dev commands (scripts)  | ✅     | Clean, test, build, preview all covered via `pnpm` |
 | DX setup (editorconfig) | ✅     | Formatting and linting enforced across team setups |
+
+---
+
+## 🍪 Phase 9: Compliance (Cookies & Consent)
+
+| Task                               | Status | Notes                                                                 |
+| ---------------------------------- | ------ | --------------------------------------------------------------------- |
+| Cookie consent framework           | ❌     | Requested by client; will require third-party account and integration |
+| CMP implementation (Optanon, etc.) | ❌     | Next team will choose and implement provider                          |

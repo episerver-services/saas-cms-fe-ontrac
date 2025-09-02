@@ -23,7 +23,7 @@ export const dynamic = 'force-dynamic'
  * @returns A rendered block component in draft preview mode, or `notFound()` if unavailable.
  *
  * @example
- * /en/draft/7f42.../block/abcd1234 → renders block with key `abcd1234` from version `7f42...`
+ * /draft/7f42.../block/abcd1234 → renders block with key `abcd1234` from version `7f42...`
  */
 export default async function Page({
   params,

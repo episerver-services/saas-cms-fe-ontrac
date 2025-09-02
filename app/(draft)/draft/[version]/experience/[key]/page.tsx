@@ -10,6 +10,12 @@ import { Suspense } from 'react'
 export const revalidate = 0
 export const dynamic = 'force-dynamic'
 
+type DraftExperienceRouteParams = {
+  key: string
+  locale: string
+  version: string
+}
+
 /**
  * Renders a draft preview page for a Visual Builder Experience.
  *
@@ -18,20 +24,20 @@ export const dynamic = 'force-dynamic'
  * using the VisualBuilderExperienceWrapper.
  *
  * @param props - The async route props object.
- * @param props.params - Route parameters:
- * - `key`: The unique content key of the experience.
- * - `locale`: The active locale.
- * - `version`: The preview version of the experience.
+ * @param props.params - The route parameters:
+ *   - `key`: The unique content key of the experience.
+ *   - `locale`: The active locale.
+ *   - `version`: The preview version of the experience.
  *
  * @returns A full Visual Builder experience page preview, or a 404 if not found.
  *
  * @example
- * /en/draft/9f8e.../experience/abcd1234 → renders preview of experience `abcd1234`
+ * /draft/9f8e.../experience/abcd1234 → renders preview of experience `abcd1234`
  */
 export default async function Page({
   params,
 }: {
-  params: Promise<{ key: string; locale: string; version: string }>
+  params: Promise<DraftExperienceRouteParams>
 }) {
   const isDraftModeEnabled = await checkDraftMode()
   if (!isDraftModeEnabled) {
@@ -55,7 +61,7 @@ export default async function Page({
   }
 
   return (
-    <Suspense>
+    <Suspense fallback={<div>Loading Visual Builder experience...</div>}>
       <OnPageEdit
         version={version}
         currentRoute={`/${locale}/draft/${version}/experience/${key}`}

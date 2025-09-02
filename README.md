@@ -46,13 +46,28 @@ OPTIMIZELY_REVALIDATE_SECRET=
 NEXT_PUBLIC_CMS_URL=your-cms-instance-domain.cms.optimizely.com
 ```
 
-### 3. Run the Dev Server
+---
 
-```bash
-pnpm dev
-```
+### 🧪 Mock Preview Mode (Local Testing)
 
-If `.env.local` is missing, the app will fall back to mock GraphQL responses via MSW.
+To test Visual Builder preview routes without connecting to a live Optimizely CMS, enable mock mode:
+
+1. **In your `.env.local`:**
+
+   ```env
+   MOCK_OPTIMIZELY=true
+   NEXT_PUBLIC_MOCK_OPTIMIZELY=true
+   ```
+
+2. **Access this test route in your browser:**
+
+   ```
+   http://localhost:3000/draft/1234/my-test-slug
+   ```
+
+   You should see a mocked "hero block" or other placeholder content. This allows full testing of the preview rendering logic, draft mode, and layout without requiring CMS content or credentials.
+
+> ⚠️ Don't forget to **disable mock mode** (`MOCK_OPTIMIZELY=false`) when connecting to real CMS data.
 
 ---
 

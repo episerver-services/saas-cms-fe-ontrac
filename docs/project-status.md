@@ -26,61 +26,61 @@ _Last updated: 01 September 2025_
 
 ## 📦 Phase 2: CMS Integration (Headless Foundation)
 
-| Task                               | Status | Notes                                                       |
-| ---------------------------------- | ------ | ----------------------------------------------------------- |
-| GraphQL API connection             | 🔲     | Optimizely CMS disconnected — integration pending           |
-| SDK setup with graphql-codegen     | 🔲     | graphql-codegen removed; no generated SDK in use            |
-| Content ID config (home, layout)   | 🔲     | CMS-driven layout/homepage config removed                   |
-| Preview mode support (draft route) | 🔲     | Draft mode routes and API removed; not active in this build |
-| Mock preview route (`/draft/...`)  | ✅     | Supports local dev without CMS connection                   |
-| Fallback & error handling          | ✅     | `not-found.tsx` still handles unresolved routes cleanly     |
+| Task                               | Status | Notes                                                        |
+| ---------------------------------- | ------ | ------------------------------------------------------------ |
+| GraphQL API connection             | 🔲     | Optimizely CMS disconnected — integration pending            |
+| SDK setup with graphql-codegen     | 🔲     | graphql-codegen removed; no generated SDK in use             |
+| Content ID config (home, layout)   | 🔲     | CMS-driven layout/homepage config removed                    |
+| Preview mode support (draft route) | ✅     | Draft mode routes implemented and functioning with mock data |
+| Mock preview route (`/draft/...`)  | ✅     | Supports local dev without CMS connection                    |
+| Fallback & error handling          | ✅     | `not-found.tsx` still handles unresolved routes cleanly      |
 
 ---
 
 ## 🧱 Phase 3: Core Rendering Logic
 
-| Task                                 | Status | Notes                                                                |
-| ------------------------------------ | ------ | -------------------------------------------------------------------- |
-| Page routing (`[locale]/[slug]`)     | ✅     | Catch-all route remains implemented                                  |
-| Catch-all content renderer           | 🔲     | Content renderer stripped back; CMS not currently connected          |
-| Component factory mapper             | 🔲     | Factory logic removed; static fallback block only in use             |
-| Slot renderer for named areas        | 🔲     | No slot rendering — layout rendering removed with CMS disconnect     |
-| ID resolution (inline/shared blocks) | 🔲     | No Visual Builder or GraphQL runtime guards present                  |
-| Rich text and media component base   | 🔲     | CMS-driven block components removed; only static placeholders remain |
+| Task                                 | Status | Notes                                                                 |
+| ------------------------------------ | ------ | --------------------------------------------------------------------- |
+| Page routing (`[[...slug]]`)         | ✅     | Catch-all route parses locale internally; supports ISR + preview mode |
+| Catch-all content renderer           | ✅     | Content renderer stripped back; fallback logic implemented            |
+| Component factory mapper             | ✅     | Draft/published page rendering active with Suspense + error fallback  |
+| Slot renderer for named areas        | ✅     | Block-to-component mapping via `ContentAreaMapper`                    |
+| ID resolution (inline/shared blocks) | 🔲     | No Visual Builder or GraphQL runtime guards present                   |
+| Rich text and media component base   | 🔲     | CMS-driven block components removed; only static placeholders remain  |
 
 ---
 
 ## 🌐 Phase 4: Performance & Delivery
 
-| Task                           | Status | Notes                                                                              |
-| ------------------------------ | ------ | ---------------------------------------------------------------------------------- |
-| Rendering model enforcement    | 🔲     | ISR not currently configured; no CMS-connected content or revalidation setup       |
-| CDN-based image transformation | 🔄     | Next.js image config present, but image usage minimal; CDN optimisation unverified |
-| Core Web Vitals planning       | 🔄     | Some layout choices hint at performance planning; full Vitals strategy not applied |
+| Task                             | Status | Notes                                                                              |
+| -------------------------------- | ------ | ---------------------------------------------------------------------------------- |
+| Rendering model enforcement      | ✅     | ISR is enabled via `revalidate = 60`; fallback logic active for preview            |
+| CDN-based image transformation   | 🔄     | Next.js image config present, but image usage minimal; CDN optimisation unverified |
+| Core Web Vitals setup (LCP, INP) | 🔄     | `web-vitals` installed; `VitalsInit` placeholder exists, but is unused             |
+| Real-user monitoring/analytics   | ❌     | No RUM or analytics tooling (Sentry, GA4, LogRocket, etc.) configured              |
 
 ---
 
 ## 🛡️ Phase 5: Accessibility, SEO & Metadata
 
-| Task                             | Status | Notes                                                               |
-| -------------------------------- | ------ | ------------------------------------------------------------------- |
-| Metadata from CMS                | 🔲     | CMS metadata integration removed; future layout-aware SEO TBD       |
-| Accessibility baseline           | 🔄     | Placeholder structure OK; no ARIA or WCAG validation yet            |
-| Skip links, ARIA audit           | ✅     | Skip link implemented in `layout.tsx`; other checks not yet applied |
-| robots.txt / sitemap setup       | ❌     | No sitemap or robots.txt routes in current codebase                 |
-| Core Web Vitals setup (LCP, INP) | 🔲     | Logging not implemented; `VitalsInit` present                       |
-| Real-user monitoring / analytics | ❌     | No GA/Sentry/LogRocket/etc configured                               |
+| Task                       | Status | Notes                                                               |
+| -------------------------- | ------ | ------------------------------------------------------------------- |
+| Metadata from CMS          | 🔲     | CMS metadata integration removed; future layout-aware SEO TBD       |
+| Accessibility baseline     | 🔄     | Placeholder structure OK; skip links in place; no WCAG audit yet    |
+| Skip links, ARIA audit     | ✅     | Skip link implemented in `layout.tsx`; other checks not yet applied |
+| robots.txt / sitemap setup | ❌     | No sitemap or robots.txt routes in current codebase                 |
 
 ---
 
 ## 🧪 Phase 6: Unit & E2E Test Frameworks
 
-| Task                          | Status | Notes                                                                       |
-| ----------------------------- | ------ | --------------------------------------------------------------------------- |
-| Jest unit test setup          | ✅     | Jest + RTL config present; minimal test coverage so far                     |
-| RTL + jest-dom assertions     | ✅     | Matchers like `toBeInTheDocument` available via `@testing-library/jest-dom` |
-| Component unit test coverage  | 🔄     | Starter tests in place (e.g. `ContentAreaMapper`); most components untested |
-| E2E/Browsers tests (optional) | 🔲     | Playwright not yet present; E2E testing deferred until CMS integration      |
+| Task                            | Status | Notes                                                                       |
+| ------------------------------- | ------ | --------------------------------------------------------------------------- |
+| Jest unit test setup            | ✅     | Jest + RTL config present; minimal test coverage so far                     |
+| RTL + jest-dom assertions       | ✅     | Matchers like `toBeInTheDocument` available via `@testing-library/jest-dom` |
+| Component unit test coverage    | 🔄     | Starter tests in place (e.g. `ContentAreaMapper`); most components untested |
+| E2E/Browsers tests (optional)   | ✅     | Playwright installed; simple baseline test included                         |
+| BDD tests (Cucumber) (optional) | ✅     | BDD configured with `@cucumber/cucumber`; working `.feature` test present   |
 
 ---
 

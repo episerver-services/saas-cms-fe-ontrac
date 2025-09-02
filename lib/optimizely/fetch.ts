@@ -1,6 +1,6 @@
-import { DocumentNode, print } from 'graphql'
 import { getMockResponse } from '@/__mocks__/preview-page'
 import { isVercelError } from '../type-guards'
+import { draftMode } from 'next/headers'
 
 interface OptimizelyFetchOptions {
   headers?: Record<string, string>
@@ -95,7 +95,7 @@ export const optimizelyFetch = async <Response, Variables = object>({
         ...configHeaders,
       },
       body: JSON.stringify({
-        query,
+        query, // ✅ use directly
         ...(variables && { variables }),
       }),
       cache,
@@ -114,20 +114,22 @@ export const optimizelyFetch = async <Response, Variables = object>({
 
 /**
  * Lightweight GraphQL SDK-style requester.
- * Converts AST into string (for real fetch) or uses as-is in mock mode.
+ * Automatically enables preview mode when Next.js Draft Mode is active.
  */
 const requester = async <T, V>(
-  query: DocumentNode | string,
+  query: string,
   variables: V,
-  options?: OptimizelyFetchOptions
+  options: OptimizelyFetchOptions = {}
 ): Promise<T> => {
-  const isMock = process.env.MOCK_OPTIMIZELY === 'true'
+  const { isEnabled } = await draftMode()
+  const isPreview = options.preview ?? isEnabled
 
   return (
     await optimizelyFetch<T, V>({
-      query: isMock ? String(query) : print(query as DocumentNode),
+      query, // ✅ no need to stringify or print
       variables,
       ...options,
+      preview: isPreview,
     })
   ).data
 }

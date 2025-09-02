@@ -10,14 +10,20 @@ const HEADER_KEY_LOCALE = 'X-Locale'
 /**
  * Determines whether the request path should bypass locale handling.
  *
- * This excludes static assets, API routes, and any path containing a file extension.
+ * This excludes static assets, API routes, known system paths (like /draft),
+ * and any path containing a file extension.
  *
  * @param path - The request pathname (e.g. `/about`, `/api/user`, `/styles.css`)
  * @returns True if the path should be excluded from locale middleware
  */
 function shouldExclude(path: string): boolean {
   return (
-    path.startsWith('/static') || path.includes('/api/') || path.includes('.') // e.g. .css, .js, .png
+    path.startsWith('/static') ||
+    path.includes('/api/') ||
+    path.includes('.') || // e.g. .css, .js, .png
+    path.startsWith('/draft') || // ✅ Prevent locale rewrite on draft preview routes
+    path.startsWith('/preview') || // ✅ Prevent locale rewrite on preview API routes
+    path.startsWith('/auth') // ✅ (Optional) Add other system routes you want to exclude
   )
 }
 

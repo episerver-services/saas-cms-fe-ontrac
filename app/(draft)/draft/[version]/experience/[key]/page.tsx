@@ -18,7 +18,7 @@ export const dynamic = 'force-dynamic'
  * using the VisualBuilderExperienceWrapper.
  *
  * @param props - The async route props object.
- * @param props.params - A promise that resolves to the route parameters:
+ * @param props.params - Route parameters:
  * - `key`: The unique content key of the experience.
  * - `locale`: The active locale.
  * - `version`: The preview version of the experience.

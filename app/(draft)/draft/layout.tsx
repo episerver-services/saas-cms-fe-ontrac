@@ -1,5 +1,6 @@
 import DraftActions from '@/app/components/draft/draft-actions'
 import SharedPageLayout from '@/app/components/layout/shared-page-layout'
+import { Heading } from '@/app/components/ui/heading'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -22,6 +23,7 @@ export default async function DraftLayout({
   return (
     <SharedPageLayout locale={locale} includeCMSPreview>
       <DraftActions />
+      <Heading label="Draft/Preview Route" />
       {children}
     </SharedPageLayout>
   )

@@ -48,7 +48,7 @@ pnpm test:bdd
 
 ## E2E Testing
 
-- Located under: `tests/`
+- Located under: `e2e/`
 - Framework: **Playwright**
 - Simulates real user interaction across full pages.
 

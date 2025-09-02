@@ -15,7 +15,7 @@ export const dynamic = 'force-dynamic'
  * It validates the draft mode, fetches the component by its key and version, and renders it.
  *
  * @param props - An async route object containing dynamic route parameters.
- * @param props.params - A promise that resolves to the route parameters:
+ * @param props.params - Route parameters:
  * - `key`: The unique identifier for the CMS component (block GUID or key).
  * - `locale`: The locale for the requested content (e.g. "en").
  * - `version`: The draft version identifier (GUID or version key).

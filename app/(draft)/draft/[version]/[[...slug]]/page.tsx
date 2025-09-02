@@ -9,36 +9,33 @@ export const revalidate = 0
 export const dynamic = 'force-dynamic'
 
 /**
- * Renders a Visual Builder draft preview page for a CMS page identified by its locale, slug, and version.
+ * Renders a Visual Builder draft preview page for a CMS page identified by its slug and version.
  *
  * This route is used by Optimizely's Visual Builder to render full page content in draft mode.
- * It validates the draft preview state, fetches the page content by URL, and maps its content blocks.
+ * It validates the draft preview state, fetches the page content by version, and maps its content blocks.
  *
- * @param props - An async route object containing dynamic URL segments.
- * @param props.params - A promise that resolves to the route parameters:
- * - `locale`: The locale for the requested page (e.g. "en", "sv").
- * - `version`: The draft version identifier (GUID or version key).
- * - `slug` (optional): The URL path for the requested page.
+ * @param props - Route props including dynamic segments:
+ *   - `version`: The draft version ID (e.g., GUID).
+ *   - `slug` (optional): The URL path for the requested page (e.g., "about-us").
  *
- * @returns A React layout rendering the requested draft content, or triggers `notFound()` if invalid.
+ * @returns A React layout rendering the requested draft content, or triggers `notFound()` if missing or invalid.
  *
  * @example
- * /draft/7f42.../home → fetches `"/home"` in English from draft version `7f42...`
+ * /preview/7f42.../home → fetches "/home" from draft version "7f42..."
  */
 export default async function CmsPage({
   params,
 }: {
-  params: Promise<{ locale: string; version: string; slug?: string }>
+  params: Promise<{ version: string; slug?: string }>
 }) {
+  // Await the params Promise in Next.js 15+
+  const { version, slug = '' } = await params
+
   const isDraftModeEnabled = await checkDraftMode()
-  if (!isDraftModeEnabled) {
-    return notFound()
-  }
+  if (!isDraftModeEnabled) return notFound()
 
-  const { locale, slug = '', version } = await params
-  const locales = getValidLocale(locale)
+  const locales = getValidLocale('en')
 
-  // 🔁 TEMP: Use mock-only query while CMS schema is unknown
   const pageResponse = await optimizely.GetPreviewStartPage({
     locales: [locales],
     version,
@@ -52,7 +49,7 @@ export default async function CmsPage({
       {process.env.MOCK_OPTIMIZELY !== 'true' && (
         <OnPageEdit
           version={version}
-          currentRoute={`/${locale}/draft/${version}/${slug}`}
+          currentRoute={`/preview/${version}/${slug}`}
         />
       )}
       <ContentAreaMapper blocks={blocks} preview />

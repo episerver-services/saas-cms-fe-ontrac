@@ -40,16 +40,6 @@ const nextConfig: NextConfig = {
       },
     ]
   },
-
-  async redirects() {
-    return [
-      {
-        source: '/preview/:path*',
-        destination: '/api/draft:path*',
-        permanent: true,
-      },
-    ]
-  },
 }
 
 export default nextConfig
